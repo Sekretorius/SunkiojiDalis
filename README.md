@@ -5,6 +5,6 @@
 
 # Kaip paleisti?
 
-`dotnet watch run -p SunkiojiDalis.csproj`
+Konsolėje `dotnet watch run -p SunkiojiDalis.csproj` arba per VS Code: `Run` -> `Run without debugging`.
 
 Po to interneto naršyklėje: `localhost:5000/`
