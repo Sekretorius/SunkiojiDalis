@@ -2,10 +2,14 @@ using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace SunkiojiDalis.Hubs
 {
+    [JsonObject(MemberSerialization.Fields)]
     public class Player {
+        private int id;
         private int x;
         private int y;
         private int width;
@@ -16,7 +20,8 @@ namespace SunkiojiDalis.Hubs
         private bool moving;
         private string sprite;
 
-        public Player(int x, int y, int width, int height, int frameX, int frameY, int speed, bool moving, string sprite) {
+        public Player(int id, int x, int y, int width, int height, int frameX, int frameY, int speed, bool moving, string sprite) {
+            this.id = id;
             this.x = x;
             this.y = y;
             this.width = width;
@@ -27,18 +32,39 @@ namespace SunkiojiDalis.Hubs
             this.moving = moving;
             this.sprite = sprite;
         }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return this.id;
+        }
     }
 
+    public static class PlayersList {
+        public static Dictionary<int, Player> players = new Dictionary<int, Player>();
+    }
 
     public class ChatHub : Hub
     {
-        public List<Player> players = new List<Player>();
+        
         public async Task JoinGame(string player)
-        {
-            Console.WriteLine(players);
+        {   
+            Random rd = new Random();
+            int rand_num = rd.Next(1, 99999);
             var convertedPlayer = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(player);
-            players.Add(convertedPlayer);
-            await Clients.All.SendAsync("AllPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(players));
+            convertedPlayer.setId(rand_num);
+            PlayersList.players[rand_num] = convertedPlayer;
+            await Clients.Caller.SendAsync("RecieveId", Newtonsoft.Json.JsonConvert.SerializeObject(convertedPlayer.getId()));
+            await Clients.All.SendAsync("RecieveInfoAboutOtherPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(PlayersList.players.Values.ToList()));
+        }
+
+        public async Task UpdatePlayerInfo(string player)
+        {
+            var convertedPlayer = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(player);
+            PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
+            await Clients.All.SendAsync("RecieveInfoAboutOtherPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(PlayersList.players.Values.ToList()));
         }
     }
 }
