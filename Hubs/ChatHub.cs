@@ -31,6 +31,7 @@ namespace SunkiojiDalis.Hubs
             this.speed = speed;
             this.moving = moving;
             this.sprite = sprite;
+            //to do: sync other actions 
         }
 
         public void setId(int id) {
@@ -66,5 +67,9 @@ namespace SunkiojiDalis.Hubs
             PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
             await Clients.All.SendAsync("RecieveInfoAboutOtherPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(PlayersList.players.Values.ToList()));
         }
+
+        //to do: handle player disconnect
+        //to do: handle player reconnect
+
     }
 }

@@ -30,6 +30,16 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").withAuto
 
 connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
   otherPlayers = JSON.parse(newPlayersList);
+  //to do: check coordinates with current player - take server coordinates
+  for(const element of otherPlayers) {
+    if(element.id === player.id)
+    {
+      player.id = element.id;
+      player.x = element.x;
+      player.y = element.y;
+      break;
+    }
+  }
 });
 
 connection.on("RecieveId", function (id) {
@@ -43,6 +53,7 @@ connection.start().then(function () {
   document.getElementById("canvas").disabled = false;
   startAnimating(30);
 }).catch(function (err) {
+  //to do: add notification for user 
   return console.error(err.toString());
 });
 
@@ -116,16 +127,7 @@ function animate() {
     then = now - (elapsed % fpsInterval);
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
-    drawSprite(
-      player.sprite,
-      player.width * player.frameX,
-      player.height * player.frameY,
-      player.width,
-      player.height,
-      player.x,
-      player.y,
-      player.width,
-      player.height);
+
     if (otherPlayers.length > 0) {
       for(const el of otherPlayers) {
         drawSprite(
@@ -140,8 +142,12 @@ function animate() {
           el.height);
       }
     }
+
+
     movePlayer();
     handlePlayerFrame();
+    
+    //to do: send/update player info to server when it is needed
     if (player.id !== -1){
       sendPlayerInfoToServer();
     }
