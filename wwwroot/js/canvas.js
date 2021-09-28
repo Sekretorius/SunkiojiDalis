@@ -5,9 +5,10 @@ canvas.width = 800;
 canvas.height = 500;
 
 const keys = [];
-const allPlayers = [];
+let otherPlayers = [];
 
 const player = {
+  id: -1,
   x: 200,
   y: 200,
   width: 32,
@@ -25,26 +26,44 @@ function joinGame() {
   });
 }
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").withAutomaticReconnect().build();
+
+connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
+  otherPlayers = JSON.parse(newPlayersList);
+  //to do: check coordinates with current player - take server coordinates
+  for(const element of otherPlayers) {
+    if(element.id === player.id)
+    {
+      player.id = element.id;
+      player.x = element.x;
+      player.y = element.y;
+      break;
+    }
+  }
+});
+
+connection.on("RecieveId", function (id) {
+  player.id = id;
+});
+
+connection.ondi
+
 connection.start().then(function () {
-  console.log("Connected.")
   joinGame();
   document.getElementById("canvas").disabled = false;
+  startAnimating(30);
 }).catch(function (err) {
+  //to do: add notification for user 
   return console.error(err.toString());
 });
 
-connection.on("AllPlayers", function (players) {
-  allPlayers = JSON.parse(players);
-});
-
-const playerSprite = new Image();
-playerSprite.src = player.sprite;
 const background = new Image();
 background.src = "resources/backgrounds/grass_background.png";
 
 function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
-  context.drawImage(img, sX, sY, sW, sH, dX, dY, dW, dH);
+  const playerSprite = new Image();
+  playerSprite.src = img;
+  context.drawImage(playerSprite, sX, sY, sW, sH, dX, dY, dW, dH);
 }
 
 window.addEventListener("keydown", function(e) {
@@ -94,6 +113,12 @@ function startAnimating(fps) {
   animate();
 }
 
+function sendPlayerInfoToServer() {
+  connection.invoke("UpdatePlayerInfo", JSON.stringify(player)).catch(function (err) {
+    return console.error(err.toString());
+  });
+}
+
 function animate() {
   requestAnimationFrame(animate);
   now = Date.now();
@@ -102,21 +127,30 @@ function animate() {
     then = now - (elapsed % fpsInterval);
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
-    for(var el in allPlayers) {
-      drawSprite(el.sprite,
-        el.width * el.frameX,
-        el.height * el.frameY,
-        el.width,
-        el.height,
-        el.x,
-        el.y,
-        el.width,
-        el.height);
+
+    if (otherPlayers.length > 0) {
+      for(const el of otherPlayers) {
+        drawSprite(
+          el.sprite,
+          el.width * el.frameX,
+          el.height * el.frameY,
+          el.width,
+          el.height,
+          el.x,
+          el.y,
+          el.width,
+          el.height);
+      }
     }
+
+
     movePlayer();
     handlePlayerFrame();
+    
+    //to do: send/update player info to server when it is needed
+    if (player.id !== -1){
+      sendPlayerInfoToServer();
+    }
     requestAnimationFrame(animate);
   }
 }
-
-startAnimating(30);
