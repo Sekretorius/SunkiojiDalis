@@ -1,6 +1,6 @@
 namespace SunkiojiDalis{
   public class LegendaryPotion: AbstractPotion {
-    public LegendaryPotion(int id, string sprite, string name, int weight, int quantity, int x, int y, string ability) {
+    public LegendaryPotion(int id, string sprite, string name, int weight, int quantity, int x, int y, int belongsTo, string ability) {
       this.Id = id;
       this.Sprite = sprite;
       this.Name = name;
@@ -8,6 +8,7 @@ namespace SunkiojiDalis{
       this.Quantity = quantity;
       this.X = x;
       this.Y = y;
+      this.BelongsTo = -1;
       this.Ability = ability;
     }
   }

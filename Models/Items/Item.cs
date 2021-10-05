@@ -7,6 +7,7 @@ namespace SunkiojiDalis{
     public int Quantity;
     public int X;
     public int Y;
+    public int BelongsTo;
   }
 }
 

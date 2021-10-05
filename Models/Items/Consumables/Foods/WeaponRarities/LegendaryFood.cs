@@ -1,6 +1,6 @@
 namespace SunkiojiDalis{
   public class LegendaryFood: AbstractFood {
-    public LegendaryFood(int id, string sprite, string name, int weight, int quantity, int x, int y, int health) {
+    public LegendaryFood(int id, string sprite, string name, int weight, int quantity, int x, int y, int belongsTo, int health) {
       this.Id = id;
       this.Sprite = sprite;
       this.Name = name;
@@ -8,6 +8,7 @@ namespace SunkiojiDalis{
       this.Quantity = quantity;
       this.X = x;
       this.Y = y;
+      this.BelongsTo = -1;
       this.Health = health;
     }
   }

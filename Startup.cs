@@ -50,6 +50,8 @@ namespace SunkiojiDalis
 
             app.UseEndpoints(endpoints =>
             {
+                var item = ItemsList.GenerateItem();
+                ItemsList.AddItemToList(item);
                 endpoints.MapRazorPages();
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
