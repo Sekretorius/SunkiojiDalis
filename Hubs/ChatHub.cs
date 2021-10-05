@@ -49,7 +49,11 @@ namespace SunkiojiDalis.Hubs
 
     public static class ItemsList {
         public static Dictionary<int, Item> items = new Dictionary<int, Item>();
-        
+
+        public static void AddItemToList(Item item) {
+            items[item.Id] = item;
+        }
+
         public static Item GenerateItem() {
             Random rd = new Random();
             int randNum = rd.Next(1, 9);
@@ -70,20 +74,20 @@ namespace SunkiojiDalis.Hubs
             switch(randNum) {
                 case 1 or 2:
                     spritePath = PickRandomItemSprite("resources/items/armor/armor");
-                    return factory.CreateArmor(id, spritePath, name, weight, quantity, x, y, rd.Next(1,11));
+                    return factory.CreateArmor(id, spritePath, name, weight, quantity, x, y, -1, rd.Next(1,11));
                 case 3 or 4:
                     spritePath = PickRandomItemSprite("resources/items/weapon/weapon");
-                    return factory.CreateWeapon(id, spritePath, name, weight, quantity, x, y, rd.Next(1,11));
+                    return factory.CreateWeapon(id, spritePath, name, weight, quantity, x, y, -1, rd.Next(1,11));
                 case 5 or 6:
                     spritePath = PickRandomItemSprite("resources/items/weapon/weapon");
-                    return factory.CreateFood(id, spritePath, name, weight, quantity, x, y, rd.Next(1,101));
+                    return factory.CreateFood(id, spritePath, name, weight, quantity, x, y, -1, rd.Next(1,101));
                 case 7 or 8:
                     spritePath = PickRandomItemSprite("resources/items/weapon/weapon");
-                    return factory.CreatePotion(id, spritePath, name, weight, quantity, x, y, "Useless ability");
+                    return factory.CreatePotion(id, spritePath, name, weight, quantity, x, y, -1, "Useless ability");
                 default:
                     break;
             }
-            var nullItem = factory.CreateArmor(-1, spritePath, "", -1, -1, -1, -1, -1);
+            var nullItem = factory.CreateArmor(-1, spritePath, "", -1, -1, -1, -1, -1, -1);
             return nullItem;
         }
 
@@ -126,6 +130,16 @@ namespace SunkiojiDalis.Hubs
             var convertedPlayer = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(player);
             PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
             await Clients.All.SendAsync("RecieveInfoAboutOtherPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(PlayersList.players.Values.ToList()));
+        }
+
+        public async Task SendItemsListToPlayers() {
+            await Clients.All.SendAsync("RecieveItemInfo", Newtonsoft.Json.JsonConvert.SerializeObject(ItemsList.items.Values.ToList()));
+        }
+
+        public async Task UpdateItemsList(string item) {
+            var convertedItem = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(item);
+            ItemsList.AddItemToList(convertedItem);
+            await Clients.All.SendAsync("RecieveItemInfo", Newtonsoft.Json.JsonConvert.SerializeObject(ItemsList.items.Values.ToList()));
         }
 
         //to do: handle player disconnect
