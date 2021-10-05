@@ -6,6 +6,7 @@ canvas.height = 500;
 
 const keys = [];
 let otherPlayers = [];
+let items = [];
 
 const player = {
   id: -1,
@@ -26,6 +27,12 @@ function joinGame() {
   });
 }
 
+function getItems() {
+  connection.invoke("SendItemsListToPlayers").catch(function (err) {
+    return console.error(err.toString());
+  });
+}
+
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").withAutomaticReconnect().build();
 
 connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
@@ -42,14 +49,17 @@ connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
   }
 });
 
+connection.on("RecieveItemInfo", function (newItems) {
+  items = JSON.parse(newItems);
+});
+
 connection.on("RecieveId", function (id) {
   player.id = id;
 });
 
-connection.ondi
-
 connection.start().then(function () {
   joinGame();
+  
   document.getElementById("canvas").disabled = false;
   startAnimating(30);
 }).catch(function (err) {
@@ -142,6 +152,16 @@ function animate() {
           el.height);
       }
     }
+    if (items.length > 0) {
+      for(const el of items) {
+        const img = new Image();
+        img.src = el.Sprite;
+        context.drawImage(
+          img,
+          el.X,
+          el.Y)
+      }
+    }
 
 
     movePlayer();
@@ -150,6 +170,7 @@ function animate() {
     //to do: send/update player info to server when it is needed
     if (player.id !== -1){
       sendPlayerInfoToServer();
+      getItems();
     }
     requestAnimationFrame(animate);
   }
