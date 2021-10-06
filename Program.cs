@@ -6,14 +6,22 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SunkiojiDalis.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using SunkiojiDalis.Engine;
 
 namespace SunkiojiDalis
 {
     public class Program
     {
+        public static IHubContext<ChatHub> IHubContext;
+        
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            IHost host = CreateHostBuilder(args).Build();
+            IHubContext = (IHubContext<ChatHub>)host.Services.GetService(typeof(IHubContext<ChatHub>));
+            ServerEngine.Instance.Initialize();
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

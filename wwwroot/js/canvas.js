@@ -142,6 +142,24 @@ function animate() {
           el.height);
       }
     }
+    if (ClientObjectCount > 0) {
+      for(const objectKey in ClientObjects) {
+        let el = ClientObjects[objectKey];
+        el.elapsedTime += elapsed / 1000;
+
+        el.position = Interpolate(el.originPosition, el.targetPosition, el.elapsedTime, el.travelTime);
+        drawSprite(
+          el.sprite,
+          el.width * el.frameX,
+          el.height * el.frameY,
+          el.width,
+          el.height,
+          el.position.x,
+          el.position.y,
+          el.width,
+          el.height);
+      }
+    }
 
 
     movePlayer();

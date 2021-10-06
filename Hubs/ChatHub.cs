@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Newtonsoft.Json;
 using System.Linq;
+using SunkiojiDalis.Engine;
 
 namespace SunkiojiDalis.Hubs
 {
@@ -59,6 +60,7 @@ namespace SunkiojiDalis.Hubs
             PlayersList.players[rand_num] = convertedPlayer;
             await Clients.Caller.SendAsync("RecieveId", Newtonsoft.Json.JsonConvert.SerializeObject(convertedPlayer.getId()));
             await Clients.All.SendAsync("RecieveInfoAboutOtherPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(PlayersList.players.Values.ToList()));
+            await ServerEngine.NetworkManager.OnNewClientConnected(Clients.Caller);
         }
 
         public async Task UpdatePlayerInfo(string player)
@@ -68,6 +70,10 @@ namespace SunkiojiDalis.Hubs
             await Clients.All.SendAsync("RecieveInfoAboutOtherPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(PlayersList.players.Values.ToList()));
         }
 
+        public async Task HandleClientRequest(string data)
+        {
+            await Task.Run(()=>{ ServerEngine.NetworkManager.HandleClientRequest(data);});
+        }
         //to do: handle player disconnect
         //to do: handle player reconnect
 
