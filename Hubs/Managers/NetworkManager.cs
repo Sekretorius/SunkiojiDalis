@@ -21,7 +21,11 @@ namespace SunkiojiDalis.Network
         private IHubContext<ChatHub> GameHub;
 
         private List<NetworkObject> networkObjects = new List<NetworkObject>();
-        private Dictionary<string, List<NetworkRequest>> networkRequestQueue = new Dictionary<string, List<NetworkRequest>>();
+
+        private List<NetworkRequest> allClientsRequestQueue = new List<NetworkRequest>();
+        private Dictionary<string, List<NetworkRequest>> clientGroupRequestQueue = new Dictionary<string, List<NetworkRequest>>();
+        private Dictionary<string, List<NetworkRequest>> singleClientRequestQueue = new Dictionary<string, List<NetworkRequest>>();
+
         private List<NetworkRequest> clientsRequestQueue = new List<NetworkRequest>();
 
         public NetworkManager() : base()
@@ -44,19 +48,39 @@ namespace SunkiojiDalis.Network
         public override void Update() 
         {
             //proccess server requests
-            if(networkRequestQueue.Values.Count != 0)
+            if(allClientsRequestQueue.Count > 0 || clientGroupRequestQueue.Values.Count > 0 || singleClientRequestQueue.Values.Count > 0)
             {
                 lock(ClientRequestProccessLock)
                 {
                     List<Task> messageTasks = new List<Task>();
-                    foreach(string requestMethod in networkRequestQueue.Keys)
+                    
+                    //proccess all client requests
+                    messageTasks.Add(Task.Run(async () => { await SyncDataWithClients(allClientsRequestQueue); }));
+                    
+                    //proccess client group requests
+                    messageTasks.Add(Task.Run(async () => 
                     {
-                        messageTasks.Add(Task.Run(async () => { await SyncDataWithClients(networkRequestQueue[requestMethod]); }));
-                    }
+                        foreach(string groupId in clientGroupRequestQueue.Keys)
+                        {
+                            await SyncDataWithGroup(groupId, clientGroupRequestQueue[groupId]);
+                        }
+                    }));
+
+                    //proccess single client requests
+                    messageTasks.Add(Task.Run(async () => 
+                    {
+                        foreach(string clientId in singleClientRequestQueue.Keys)
+                        {
+                            await SyncDataWithClient(clientId, singleClientRequestQueue[clientId]);
+                        }
+                    }));
+
                     Task sendMessagesTask = Task.WhenAll(messageTasks);
                     sendMessagesTask.Wait(); 
                     
-                    networkRequestQueue.Clear();
+                    allClientsRequestQueue.Clear();
+                    clientGroupRequestQueue.Clear();
+                    singleClientRequestQueue.Clear();
                 }
             }
 
@@ -74,11 +98,13 @@ namespace SunkiojiDalis.Network
             }
         }
 
-        public void AddNewNetworkObject(NetworkObject networkObject){
+        public void AddNewObjectToAllClients(NetworkObject networkObject){
             lock(ProccessNetworkObjectLock)
             {
-                networkObjects.Add(networkObject);
-                AddRequest(new NetworkRequest(
+                networkObjects.Add(networkObject); //to do: separete this;
+                if(!networkObject.CreateOnClient || networkObject == null) return;
+
+                AddRequestToAllClients(new NetworkRequest(
                     networkObject.GUID,
                     nameof(MainNetworkRequests.CreateClientObject),
                     JsonConvert.SerializeObject(networkObject.OnClientSideCreation())
@@ -86,26 +112,64 @@ namespace SunkiojiDalis.Network
             }
         }
 
-        public void AddRequest(NetworkRequest request)
-        {
-            lock(ServerRequestProccessLock)
+        public void AddNewObjectToGroup(string groupId, NetworkObject networkObject){
+            lock(ProccessNetworkObjectLock)
             {
-                if(!networkRequestQueue.ContainsKey(request.RequestMethod))
-                {
-                    networkRequestQueue.Add(request.RequestMethod, new List<NetworkRequest>());
-                }
-                networkRequestQueue[request.RequestMethod].Add(request);
+                networkObjects.Add(networkObject); //to do: separete this;
+                if(!networkObject.CreateOnClient || !string.IsNullOrEmpty(groupId) || networkObject == null) return;
+
+                AddRequestToGroup(groupId, new NetworkRequest(
+                    networkObject.GUID,
+                    nameof(MainNetworkRequests.CreateClientObject),
+                    JsonConvert.SerializeObject(networkObject.OnClientSideCreation())
+                ));
             }
         }
 
-        public async Task SyncDataWithClient(List<NetworkRequest> requests)
-        {
-            //need better handling of client player
-            //need to get iclientproxy to send request to wanted player
+        public void AddNewObjectToSingleClient(string clientId, NetworkObject networkObject){
+            lock(ProccessNetworkObjectLock)
+            {
+                networkObjects.Add(networkObject); //to do: separete this;
+                if(!networkObject.CreateOnClient || !string.IsNullOrEmpty(clientId) || networkObject == null) return;
 
-            //then need to separe requests in groups of send type
-            //and lastly proccess them in update
-            throw new NotImplementedException();
+                AddRequestToGroup(clientId, new NetworkRequest(
+                    networkObject.GUID,
+                    nameof(MainNetworkRequests.CreateClientObject),
+                    JsonConvert.SerializeObject(networkObject.OnClientSideCreation())
+                ));
+            }
+        }
+
+        public void AddRequestToAllClients(NetworkRequest request)
+        {
+            lock(ServerRequestProccessLock)
+            {
+                allClientsRequestQueue.Add(request);
+            }
+        }
+
+        public void AddRequestToGroup(string groupId, NetworkRequest request)
+        {
+            lock(ServerRequestProccessLock)
+            {
+                if(!clientGroupRequestQueue.ContainsKey(groupId))
+                {
+                    clientGroupRequestQueue.Add(groupId, new List<NetworkRequest>());
+                }
+                clientGroupRequestQueue[groupId].Add(request);
+            }
+        }
+
+        public void AddRequestToSingleClient(string clientId, NetworkRequest request)
+        {
+            lock(ServerRequestProccessLock)
+            {
+                if(!singleClientRequestQueue.ContainsKey(clientId))
+                {
+                    singleClientRequestQueue.Add(clientId, new List<NetworkRequest>());
+                }
+                singleClientRequestQueue[clientId].Add(request);
+            }
         }
 
         public async Task SyncDataWithClients(List<NetworkRequest> requests)
@@ -113,6 +177,20 @@ namespace SunkiojiDalis.Network
             if (GameHub == null || requests == null || requests.Count == 0) return;
             string requestData = JsonConvert.SerializeObject(requests);
             await GameHub.Clients.All.SendAsync(ClientRequestHandlerMethod, requestData);
+        }
+
+        public async Task SyncDataWithGroup(string groupId, List<NetworkRequest> requests)
+        {
+            if (GameHub == null || requests == null || requests.Count == 0) return;
+            string requestData = JsonConvert.SerializeObject(requests);
+            await GameHub.Clients.Group(groupId).SendAsync(ClientRequestHandlerMethod, requestData);
+        }
+
+        public async Task SyncDataWithClient(string clientId, List<NetworkRequest> requests)
+        {
+            if (GameHub == null || requests == null || requests.Count == 0) return;
+            string requestData = JsonConvert.SerializeObject(requests);
+            await GameHub.Clients.Client(clientId).SendAsync(ClientRequestHandlerMethod, requestData);
         }
 
         public void HandleClientRequest(string incommingData)
@@ -132,13 +210,14 @@ namespace SunkiojiDalis.Network
             }
         }
 
-        private List<NetworkRequest> FormAllObjectCreateRequest()
+        private List<NetworkRequest> FormAllObjectCreateRequest() //to do: make forms for group areas
         {
             lock(ProccessNetworkObjectLock)
             {
                 List<NetworkRequest> createRequests = new List<NetworkRequest>();
                 foreach (NetworkObject networkObject in networkObjects)
                 {
+                    if(!networkObject.CreateOnClient) continue;
                     createRequests.Add(new NetworkRequest(
                         networkObject.GUID,
                         nameof(MainNetworkRequests.CreateClientObject),
@@ -149,7 +228,7 @@ namespace SunkiojiDalis.Network
             }
         }
 
-        public async Task OnNewClientConnected(IClientProxy client)
+        public async Task OnNewClientConnected(IClientProxy client) //to do: has to have different functionality // if it spawns in area ...
         {
             List<NetworkRequest> requestForms = FormAllObjectCreateRequest();
             if(requestForms.Count > 0)
@@ -170,6 +249,7 @@ namespace SunkiojiDalis.Network
 	public interface INetworkObject : IObject
 	{
         NetworkManager NetworkManager { get; set; }
+        bool CreateOnClient { get; set; }
         Dictionary<string, string> OnClientSideCreation();
 	}
 
@@ -177,8 +257,10 @@ namespace SunkiojiDalis.Network
     public abstract class NetworkObject : INetworkObject
     {
         [JsonIgnore] protected string guid = string.Empty;
+        [JsonIgnore] protected bool createOnClient = true;
 
         [JsonIgnore] public NetworkManager NetworkManager { get; set; }
+        [JsonIgnore] public virtual bool CreateOnClient { get => createOnClient; set => createOnClient = value; }
         [JsonIgnore] public virtual string GUID { get => guid; set => guid = value; }
         [JsonIgnore] public virtual bool IsDestroyed { get; set; }
         
@@ -191,14 +273,19 @@ namespace SunkiojiDalis.Network
         public virtual void Update() { }
         public virtual void Destroy() { }
 
-//        protected void SyncDataWithClient(string method, int clientId, string json)
-//        {
-            //needs different player handling
-//        }
-
         protected void SyncDataWithClients(string method, string dataJson)
         {
-            NetworkManager.AddRequest(new NetworkRequest(guid, method, dataJson));
+            NetworkManager.AddRequestToAllClients(new NetworkRequest(guid, method, dataJson));
+        }
+
+        protected void SyncDataWithGroup(string groupId, string method, string dataJson)
+        {
+            NetworkManager.AddRequestToGroup(groupId, new NetworkRequest(guid, method, dataJson));
+        }
+
+        protected void SyncDataWithClient(string clientId, string method, string dataJson)
+        {
+            NetworkManager.AddRequestToSingleClient(clientId, new NetworkRequest(guid, method, dataJson));
         }
 
         public virtual Dictionary<string, string> OnClientSideCreation()
@@ -208,7 +295,6 @@ namespace SunkiojiDalis.Network
     }
 
 #endregion
-
 #region NetworkRequests
 
     public class NetworkRequest

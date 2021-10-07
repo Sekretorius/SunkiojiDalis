@@ -114,24 +114,27 @@ namespace SunkiojiDalis.Engine
 
                             if(newObject is NetworkObject)
                             {
-                                NetworkManager.AddNewNetworkObject((NetworkObject)newObject);
+                                NetworkManager.AddNewObjectToAllClients((NetworkObject)newObject);
                             }
                         }
                     }
 
                     //update
-                    foreach (IObject updatingObject in instantiadedObjects.Values)
+                    Dictionary<string, IObject> proccessedObjects = new Dictionary<string, IObject>();
+                    foreach (string updatingObjectId in instantiadedObjects.Keys)
                     {
+                        IObject updatingObject = instantiadedObjects[updatingObjectId];
                         if(updatingObject.IsDestroyed)
                         {
-                            //to do: remove destroyed objects
                             updatingObject.Destroy();
                         }
                         else
                         {
+                            proccessedObjects.Add(updatingObjectId, updatingObject);
                             updatingObject.Update();
                         }
                     }
+                    instantiadedObjects = proccessedObjects;
                 }
 
                 await Task.Delay(updateDelay);
@@ -142,7 +145,7 @@ namespace SunkiojiDalis.Engine
 
         public void InvokeObjectsMethod(string objectGuid, string method, object[] parameters)
         {
-            if(instantiadedObjects.ContainsKey(objectGuid))
+            if(!string.IsNullOrEmpty(method) && !string.IsNullOrEmpty(objectGuid) && instantiadedObjects.ContainsKey(objectGuid))
             {
                 try
                 {
