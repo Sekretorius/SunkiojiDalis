@@ -61,8 +61,10 @@ namespace SunkiojiDalis.Hubs
             AbstractItemFactory factory;
             if(randNum > 7) {
                 factory = new LegendaryItemFactory();
+                Console.WriteLine("Item rarity: Legendary");
             } else {
                 factory = new CommonItemFactory();
+                Console.WriteLine("Item rarity: Common");
             }
             string spritePath = "";
             GenerateRandomItemAttributes(out int id, 
@@ -74,15 +76,19 @@ namespace SunkiojiDalis.Hubs
             switch(randNum) {
                 case 1 or 2:
                     spritePath = PickRandomItemSprite("resources/items/armor/armor");
+                    Console.WriteLine("Creating armor");
                     return factory.CreateArmor(id, spritePath, name, weight, quantity, x, y, -1, rd.Next(1,11));
                 case 3 or 4:
                     spritePath = PickRandomItemSprite("resources/items/weapon/weapon");
+                    Console.WriteLine("Creating weapon");
                     return factory.CreateWeapon(id, spritePath, name, weight, quantity, x, y, -1, rd.Next(1,11));
                 case 5 or 6:
                     spritePath = PickRandomItemSprite("resources/items/weapon/weapon");
+                    Console.WriteLine("Creating food");
                     return factory.CreateFood(id, spritePath, name, weight, quantity, x, y, -1, rd.Next(1,101));
                 case 7 or 8:
                     spritePath = PickRandomItemSprite("resources/items/weapon/weapon");
+                    Console.WriteLine("Creating potion");
                     return factory.CreatePotion(id, spritePath, name, weight, quantity, x, y, -1, "Useless ability");
                 default:
                     break;
