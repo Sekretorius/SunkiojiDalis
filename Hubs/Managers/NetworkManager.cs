@@ -99,10 +99,12 @@ namespace SunkiojiDalis.Network
         }
 
         public void AddNewObjectToAllClients(NetworkObject networkObject){
+            if(networkObject == null) return;
+            
             lock(ProccessNetworkObjectLock)
             {
                 networkObjects.Add(networkObject); //to do: separete this;
-                if(!networkObject.CreateOnClient || networkObject == null) return;
+                if(!networkObject.CreateOnClient) return;
 
                 AddRequestToAllClients(new NetworkRequest(
                     networkObject.GUID,
@@ -113,10 +115,12 @@ namespace SunkiojiDalis.Network
         }
 
         public void AddNewObjectToGroup(string groupId, NetworkObject networkObject){
+            if(networkObject == null) return;
+            
             lock(ProccessNetworkObjectLock)
             {
                 networkObjects.Add(networkObject); //to do: separete this;
-                if(!networkObject.CreateOnClient || !string.IsNullOrEmpty(groupId) || networkObject == null) return;
+                if(!networkObject.CreateOnClient || string.IsNullOrEmpty(groupId)) return;
 
                 AddRequestToGroup(groupId, new NetworkRequest(
                     networkObject.GUID,
@@ -127,10 +131,12 @@ namespace SunkiojiDalis.Network
         }
 
         public void AddNewObjectToSingleClient(string clientId, NetworkObject networkObject){
+            if(networkObject == null) return;
+
             lock(ProccessNetworkObjectLock)
             {
                 networkObjects.Add(networkObject); //to do: separete this;
-                if(!networkObject.CreateOnClient || !string.IsNullOrEmpty(clientId) || networkObject == null) return;
+                if(!networkObject.CreateOnClient || string.IsNullOrEmpty(clientId)) return;
 
                 AddRequestToGroup(clientId, new NetworkRequest(
                     networkObject.GUID,
@@ -142,6 +148,7 @@ namespace SunkiojiDalis.Network
 
         public void AddRequestToAllClients(NetworkRequest request)
         {
+            if(request == null) return;
             lock(ServerRequestProccessLock)
             {
                 allClientsRequestQueue.Add(request);
@@ -150,6 +157,7 @@ namespace SunkiojiDalis.Network
 
         public void AddRequestToGroup(string groupId, NetworkRequest request)
         {
+            if(request == null || string.IsNullOrEmpty(groupId)) return;
             lock(ServerRequestProccessLock)
             {
                 if(!clientGroupRequestQueue.ContainsKey(groupId))
@@ -162,6 +170,7 @@ namespace SunkiojiDalis.Network
 
         public void AddRequestToSingleClient(string clientId, NetworkRequest request)
         {
+            if(request == null || string.IsNullOrEmpty(clientId)) return;
             lock(ServerRequestProccessLock)
             {
                 if(!singleClientRequestQueue.ContainsKey(clientId))
