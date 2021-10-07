@@ -50,7 +50,7 @@ namespace SunkiojiDalis.Network
             //proccess server requests
             if(allClientsRequestQueue.Count > 0 || clientGroupRequestQueue.Values.Count > 0 || singleClientRequestQueue.Values.Count > 0)
             {
-                lock(ClientRequestProccessLock)
+                lock(ServerRequestProccessLock)
                 {
                     List<Task> messageTasks = new List<Task>();
                     
@@ -87,7 +87,7 @@ namespace SunkiojiDalis.Network
             //proccess client requests
             if(clientsRequestQueue.Count != 0)
             {
-                lock(ServerRequestProccessLock)
+                lock(ClientRequestProccessLock)
                 {
                     foreach(NetworkRequest clientsRequest in clientsRequestQueue)
                     {
@@ -219,7 +219,7 @@ namespace SunkiojiDalis.Network
             }
         }
 
-        private List<NetworkRequest> FormAllObjectCreateRequest() //to do: make forms for group areas
+        private List<NetworkRequest> FormAllObjectCreateRequest() //to do: make forms for group areas 
         {
             lock(ProccessNetworkObjectLock)
             {
