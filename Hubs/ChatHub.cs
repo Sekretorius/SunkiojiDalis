@@ -5,14 +5,16 @@ using System;
 using Newtonsoft.Json;
 using System.Linq;
 using SunkiojiDalis.Engine;
+using SunkiojiDalis.Hubs.Managers;
+using System.Numerics;
 
 namespace SunkiojiDalis.Hubs
 {
     [JsonObject(MemberSerialization.Fields)]
     public class Player {
         private int id;
-        private int x;
-        private int y;
+        public int x;
+        public int y;
         private int width;
         private int height;
         private int frameX;
@@ -20,8 +22,10 @@ namespace SunkiojiDalis.Hubs
         private int speed;
         private bool moving;
         private string sprite;
+        public int worldX;
+        public int worldY;
 
-        public Player(int id, int x, int y, int width, int height, int frameX, int frameY, int speed, bool moving, string sprite) {
+        public Player(int id, int x, int y, int width, int height, int frameX, int frameY, int speed, bool moving, string sprite, int worldX, int worldY) {
             this.id = id;
             this.x = x;
             this.y = y;
@@ -32,6 +36,8 @@ namespace SunkiojiDalis.Hubs
             this.speed = speed;
             this.moving = moving;
             this.sprite = sprite;
+            this.worldX = worldX;
+            this.worldY = worldY;
             //to do: sync other actions 
         }
 
@@ -41,6 +47,19 @@ namespace SunkiojiDalis.Hubs
 
         public int getId() {
             return this.id;
+        }
+
+        public void MoveToArea(int stepX, int stepY, int x, int y)
+        {
+            this.worldX += stepX;
+            this.worldY += stepY;
+            this.x = x;
+            this.y = y;
+        }
+
+        public string GetGroupId()
+        {
+            return $"{worldX},{worldY}";
         }
     }
 
@@ -59,15 +78,69 @@ namespace SunkiojiDalis.Hubs
             convertedPlayer.setId(rand_num);
             PlayersList.players[rand_num] = convertedPlayer;
             await Clients.Caller.SendAsync("RecieveId", Newtonsoft.Json.JsonConvert.SerializeObject(convertedPlayer.getId()));
-            await Clients.All.SendAsync("RecieveInfoAboutOtherPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(PlayersList.players.Values.ToList()));
+
+            WorldManager.Instance.AddPlayer(PlayersList.players[rand_num]);
+            await Groups.AddToGroupAsync(Context.ConnectionId,convertedPlayer.GetGroupId());
+            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(WorldManager.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY) ));
+
             await ServerEngine.NetworkManager.OnNewClientConnected(Clients.Caller);
+        }
+
+        public async Task MovePlayer(Player convertedPlayer, int worldX, int worldY, int x, int y)
+        {
+            WorldManager.Instance.RemovePlayer(convertedPlayer);
+            convertedPlayer.MoveToArea(worldX, worldY, x,y);
+            WorldManager.Instance.AddPlayer(convertedPlayer);
+
+            Console.WriteLine(convertedPlayer.worldX + " " + convertedPlayer.worldY);
+
+            // Leaving the group
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, PlayersList.players[convertedPlayer.getId()].GetGroupId());
+            await Clients.Group(PlayersList.players[convertedPlayer.getId()].GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(WorldManager.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
+
+            // Entering new group
+            PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
+            await Groups.AddToGroupAsync(Context.ConnectionId, convertedPlayer.GetGroupId());
+            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(WorldManager.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
         }
 
         public async Task UpdatePlayerInfo(string player)
         {
-            var convertedPlayer = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(player);
+            var convertedPlayer = JsonConvert.DeserializeObject<Player>(player);
+
+
+            if (convertedPlayer.x <= 50)
+            {
+                if (convertedPlayer.worldX > 0)
+                {
+                    await MovePlayer(convertedPlayer, -1 , 0, 700, convertedPlayer.y);
+                }
+            }
+            else if (convertedPlayer.x >= 750)
+            {
+                if (convertedPlayer.worldX < WorldManager.width-1)
+                {
+                    await MovePlayer(convertedPlayer, 1 , 0, 100, convertedPlayer.y);
+                }
+            }
+            else if (convertedPlayer.y <= 50)
+            {
+                if (convertedPlayer.worldY > 0)
+                {
+                    await MovePlayer(convertedPlayer, 0, -1, convertedPlayer.x, 400);
+                }
+            }
+            else if (convertedPlayer.y >= 450)
+            {
+                if (convertedPlayer.worldY < WorldManager.height-1)
+                {
+                    await MovePlayer(convertedPlayer, 0, 1, convertedPlayer.x, 100);
+                }
+            }
+
             PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
-            await Clients.All.SendAsync("RecieveInfoAboutOtherPlayers", Newtonsoft.Json.JsonConvert.SerializeObject(PlayersList.players.Values.ToList()));
+            WorldManager.Instance.UpdatePlayer(convertedPlayer);
+            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(WorldManager.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
         }
 
         public async Task HandleClientRequest(string data)
