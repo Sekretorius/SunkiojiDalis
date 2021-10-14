@@ -1,31 +1,33 @@
-using SunkiojiDalis.Hubs.World;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SunkiojiDalis.Hubs.Managers
+namespace SunkiojiDalis.Hubs.Worlds
 {
-    public class WorldManager
+    public class World
     {
         public const int width = 5;
         public const int height = 5;
 
-        private static WorldManager instance;
-        public static WorldManager Instance
+        List<IObserver> observables = new List<IObserver>();
+
+        private static World instance;
+        public static World Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = new WorldManager();
+                    instance = new World();
                 }
                 return instance;
             }
-            set { if (instance == null) instance = value; }
         }
 
         private Area[,] world = new Area[width, height];
 
-        public WorldManager()
+        public Dictionary<int, Player> players = new Dictionary<int, Player>();
+
+        public World()
         {
             for (int i = 0; i < world.GetLength(0); i++)
                 for (int t = 0; t < world.GetLength(1); t++)
@@ -40,6 +42,7 @@ namespace SunkiojiDalis.Hubs.Managers
         public void AddPlayer(Player player)
         {
             world[player.worldX, player.worldY].AddPlayer(player);
+        
         }
 
         public void RemovePlayer(Player player)
@@ -50,6 +53,13 @@ namespace SunkiojiDalis.Hubs.Managers
         public void UpdatePlayer(Player player)
         {
             world[player.worldX, player.worldY].UpdatePlayer(player);
+        }
+
+        public void MoveToArea(Player player, int worldX, int worldY, int x, int y)
+        {
+            RemovePlayer(player);
+            player.MoveToArea(worldX, worldY, x, y);
+            AddPlayer(player);
         }
     } 
 }

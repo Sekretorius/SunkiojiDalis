@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SunkiojiDalis.Hubs.World
+namespace SunkiojiDalis.Hubs.Worlds
 {
     public class Area
     {

@@ -5,13 +5,14 @@ using System;
 using Newtonsoft.Json;
 using System.Linq;
 using SunkiojiDalis.Engine;
-using SunkiojiDalis.Hubs.Managers;
+using SunkiojiDalis.Hubs.Worlds;
 using System.Numerics;
 
 namespace SunkiojiDalis.Hubs
 {
     [JsonObject(MemberSerialization.Fields)]
-    public class Player {
+    public class Player : IObserver
+    {
         private int id;
         public int x;
         public int y;
@@ -51,8 +52,8 @@ namespace SunkiojiDalis.Hubs
 
         public void MoveToArea(int stepX, int stepY, int x, int y)
         {
-            this.worldX += stepX;
-            this.worldY += stepY;
+            worldX += stepX;
+            worldY += stepY;
             this.x = x;
             this.y = y;
         }
@@ -79,29 +80,25 @@ namespace SunkiojiDalis.Hubs
             PlayersList.players[rand_num] = convertedPlayer;
             await Clients.Caller.SendAsync("RecieveId", Newtonsoft.Json.JsonConvert.SerializeObject(convertedPlayer.getId()));
 
-            WorldManager.Instance.AddPlayer(PlayersList.players[rand_num]);
+            World.Instance.AddPlayer(PlayersList.players[rand_num]);
             await Groups.AddToGroupAsync(Context.ConnectionId,convertedPlayer.GetGroupId());
-            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(WorldManager.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY) ));
+            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY) ));
 
             await ServerEngine.NetworkManager.OnNewClientConnected(Clients.Caller);
         }
 
         public async Task MovePlayer(Player convertedPlayer, int worldX, int worldY, int x, int y)
         {
-            WorldManager.Instance.RemovePlayer(convertedPlayer);
-            convertedPlayer.MoveToArea(worldX, worldY, x,y);
-            WorldManager.Instance.AddPlayer(convertedPlayer);
-
-            Console.WriteLine(convertedPlayer.worldX + " " + convertedPlayer.worldY);
+            World.Instance.MoveToArea(convertedPlayer, worldX, worldY, x, y);
 
             // Leaving the group
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, PlayersList.players[convertedPlayer.getId()].GetGroupId());
-            await Clients.Group(PlayersList.players[convertedPlayer.getId()].GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(WorldManager.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
+            await Clients.Group(PlayersList.players[convertedPlayer.getId()].GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
 
             // Entering new group
             PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
             await Groups.AddToGroupAsync(Context.ConnectionId, convertedPlayer.GetGroupId());
-            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(WorldManager.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
+            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
         }
 
         public async Task UpdatePlayerInfo(string player)
@@ -118,7 +115,7 @@ namespace SunkiojiDalis.Hubs
             }
             else if (convertedPlayer.x >= 750)
             {
-                if (convertedPlayer.worldX < WorldManager.width-1)
+                if (convertedPlayer.worldX < World.width-1)
                 {
                     await MovePlayer(convertedPlayer, 1 , 0, 100, convertedPlayer.y);
                 }
@@ -132,15 +129,15 @@ namespace SunkiojiDalis.Hubs
             }
             else if (convertedPlayer.y >= 450)
             {
-                if (convertedPlayer.worldY < WorldManager.height-1)
+                if (convertedPlayer.worldY < World.height-1)
                 {
                     await MovePlayer(convertedPlayer, 0, 1, convertedPlayer.x, 100);
                 }
             }
 
             PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
-            WorldManager.Instance.UpdatePlayer(convertedPlayer);
-            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(WorldManager.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
+            World.Instance.UpdatePlayer(convertedPlayer);
+            await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
         }
 
         public async Task HandleClientRequest(string data)
