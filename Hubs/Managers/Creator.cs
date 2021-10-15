@@ -1,9 +1,12 @@
-using System;
+using Microsoft.AspNetCore.SignalR;
+using System.Threading.Tasks;
 using System.Collections.Generic;
-using SunkiojiDalis.Engine;
-using SunkiojiDalis.Character;
+using System;
+using Newtonsoft.Json;
+using System.Linq;
+using SignalRWebPack.Character;
 
-namespace SunkiojiDalis.Managers
+namespace SignalRWebPack.Managers
 {
     public interface Creator
     {

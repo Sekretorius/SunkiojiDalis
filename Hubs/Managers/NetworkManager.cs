@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SunkiojiDalis.Engine;
-using SunkiojiDalis.Hubs;
+using SignalRWebPack.Engine;
+using SignalRWebPack.Hubs;
 
 
-namespace SunkiojiDalis.Network
+namespace SignalRWebPack.Network
 {
 	public class NetworkManager : ServerObject
 	{

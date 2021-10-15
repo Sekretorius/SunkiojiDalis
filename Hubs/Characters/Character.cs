@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.SignalR;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using Newtonsoft.Json;
-using SunkiojiDalis.Engine;
-using SunkiojiDalis.Network;
+using System.Linq;
+using SignalRWebPack.Engine;
+using SignalRWebPack.Network;
 
-namespace SunkiojiDalis.Character
+namespace SignalRWebPack.Character
 {
     [JsonObject(MemberSerialization.OptOut)]
     public abstract class Character : NetworkObject

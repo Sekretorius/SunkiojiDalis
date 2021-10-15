@@ -6,13 +6,13 @@ using System.Linq;
 using System;
 using System.Diagnostics;
 using Newtonsoft.Json;
-using SunkiojiDalis.Hubs;
-using SunkiojiDalis.Network;
-using SunkiojiDalis;
-using SunkiojiDalis.Character;
-using SunkiojiDalis.Managers;
+using SignalRWebPack.Hubs;
+using SignalRWebPack.Network;
+using SignalRWebPack;
+using SignalRWebPack.Character;
+using SignalRWebPack.Managers;
 
-namespace SunkiojiDalis.Engine
+namespace SignalRWebPack.Engine
 {
     public class ServerEngine
     {
