@@ -17,8 +17,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NPC = void 0;
 var Character_1 = require("./Character");
-var Vector2D_1 = require("../Managers/Vector2D");
-var ClientEngine_1 = require("../Managers/ClientEngine");
+var Vector2D_1 = require("../Helpers/Vector2D");
 var NPC = /** @class */ (function (_super) {
     __extends(NPC, _super);
     function NPC(guid, characterData) {
@@ -37,13 +36,11 @@ var NPC = /** @class */ (function (_super) {
     NPC.prototype.Die = function () {
     };
     NPC.prototype.SyncPosition = function (syncData) {
-        var newX = parseFloat(syncData.RequestData.x);
-        var newY = parseFloat(syncData.RequestData.y);
-        this.position = new Vector2D_1.Vector2D(this.targetPosition.x, this.targetPosition.y);
-        this.targetPosition = new Vector2D_1.Vector2D(newX, newY);
-        this.originPosition = new Vector2D_1.Vector2D(this.position.x, this.position.y);
-        this.elapsedTime = 0;
-        this.travelTime = (0, ClientEngine_1.CalculateTravelTime)(this.originPosition, this.targetPosition, this.speed);
+        this.position = this.targetPosition;
+        this.targetPosition = new Vector2D_1.Vector2D(parseFloat(syncData.RequestData.x), parseFloat(syncData.RequestData.y));
+        //this.originPosition = new Vector2D(this.position.x, this.position.y);
+        //this.elapsedTime = 0;
+        //this.travelTime = CalculateTravelTime(this.originPosition, this.targetPosition, this.speed);
     };
     return NPC;
 }(Character_1.Character));

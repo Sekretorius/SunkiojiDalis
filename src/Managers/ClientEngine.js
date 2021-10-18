@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CalculateTravelTime = exports.Interpolate = exports.ClientEngineMethods = exports.ClientObjectCount = exports.ClientObjects = void 0;
 var EnemyNpc_1 = require("../Characters/EnemyNpc");
 var FriendlyNpc_1 = require("../Characters/FriendlyNpc");
-var Vector2D_1 = require("./Vector2D");
+var Vector2D_1 = require("../Helpers/Vector2D");
 exports.ClientObjects = {}; //objects that have been created
 exports.ClientObjectCount = 0;
 exports.ClientEngineMethods = {};
@@ -28,13 +28,12 @@ function CreateNewObject(guid, objectData) {
         }
     }
 }
-function Interpolate(oringV, targetV, elapsedTime, travelTime) {
-    var direction = oringV.DirectionTo(targetV);
-    var t = elapsedTime / travelTime;
-    if (t > 1.05) {
-        t = 1.05;
+function Interpolate(currentPosition, targetPosition, speed, elapsedTime) {
+    if (Vector2D_1.Vector2D.Equals(currentPosition, targetPosition) || speed === 0 || elapsedTime === 0) {
+        return currentPosition;
     }
-    return new Vector2D_1.Vector2D(oringV.x + direction.x * t, oringV.y + direction.y * t);
+    var direction = currentPosition.DirectionTo(targetPosition);
+    return Vector2D_1.Vector2D.Add(currentPosition, Vector2D_1.Vector2D.Multiply(direction.Normalize(), speed * elapsedTime));
 }
 exports.Interpolate = Interpolate;
 function CalculateTravelTime(oringV, targetV, speed) {

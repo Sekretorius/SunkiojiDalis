@@ -123,7 +123,6 @@ namespace SignalRWebPack.Hubs
         
         public async Task JoinGame(string player)
         {   
-            Console.WriteLine(player);
             Random rd = new Random();
             int rand_num = rd.Next(1, 99999);
             var convertedPlayer = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(player);

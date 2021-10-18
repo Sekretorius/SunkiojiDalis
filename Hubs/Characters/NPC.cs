@@ -14,14 +14,13 @@ namespace SignalRWebPack.Character
             float health = 0, 
             string sprite = null, 
             int areaId = 0, 
-            int x = 0, 
-            int y = 0, 
+            Vector2D position = null, 
             int width = 0, 
             int height = 0, 
             int frameX = 0, 
             int frameY = 0, 
             int speed = 0,
-            bool moving = false) : base(name, health, sprite, areaId, x, y, width, height, frameX, frameY, speed, moving){}
+            bool moving = false) : base(name, health, sprite, areaId, position, width, height, frameX, frameY, speed, moving){}
         
         public abstract void Shout();
         public virtual void SetAttackAlgorithm(AttackAlgorithm attackAlgorithm)

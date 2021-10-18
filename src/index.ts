@@ -131,8 +131,9 @@ function sendPlayerInfoToServer() {
     return console.error(err.toString());
   });
 }
-
+let timeThen = 0;
 function animate() {
+  timeThen = now;
   requestAnimationFrame(animate);
   now = Date.now();
   elapsed = now - then;
@@ -161,9 +162,8 @@ function animate() {
       for(const objectKey in ClientObjects) {
         let el = ClientObjects[objectKey];
         if(el == undefined) continue;
-        el.elapsedTime += elapsed / 1000;
 
-        el.position = Interpolate(el.originPosition, el.targetPosition, el.elapsedTime, el.travelTime);
+        el.position = Interpolate(el.position, el.targetPosition, el.speed, (now - timeThen) / 1000);
         drawSprite(
           el.sprite,
           el.width * el.frameX,

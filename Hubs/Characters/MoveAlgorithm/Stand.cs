@@ -9,9 +9,9 @@ namespace SignalRWebPack.Character
 {
     public class Stand : MoveAlgorithm
     {
-        public override void Move(ref float x, ref float y, float speed)
+        public override Vector2D Move(Vector2D currentPosition, Vector2D targetPosition, float speed)
         {
-
+            return currentPosition;
         }
     }
 }

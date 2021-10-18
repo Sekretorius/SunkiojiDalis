@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Character = void 0;
-var Vector2D_1 = require("../Managers/Vector2D");
+var Vector2D_1 = require("../Helpers/Vector2D");
 var Character = /** @class */ (function () {
     function Character(guid, characterData) {
         this.guid = guid;

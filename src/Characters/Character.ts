@@ -1,4 +1,4 @@
-import { Vector2D } from '../Managers/Vector2D';
+import { Vector2D } from '../Helpers/Vector2D';
 
 export class Character
 {

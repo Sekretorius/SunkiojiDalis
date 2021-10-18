@@ -15,6 +15,6 @@ namespace SignalRWebPack.Character
     }
     public abstract class MoveAlgorithm
     {
-        public abstract void Move(ref float x, ref float y, float speed);
+        public abstract Vector2D Move(Vector2D currentPosition, Vector2D targetPosition, float speed);
     }
 }

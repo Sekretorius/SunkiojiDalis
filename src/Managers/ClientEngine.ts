@@ -1,6 +1,6 @@
 import { EnemyNpc } from '../Characters/EnemyNpc';
 import { FriendlyNpc } from '../Characters/FriendlyNpc';
-import { Vector2D } from './Vector2D';
+import { Vector2D } from '../Helpers/Vector2D';
 import { NetworkRequest } from './NetworkManager'
 
 export var ClientObjects: any = {}; //objects that have been created
@@ -34,13 +34,13 @@ function CreateNewObject(guid: string, objectData: any) {
     }
 }
 
-export function Interpolate(oringV: Vector2D, targetV: Vector2D, elapsedTime: number, travelTime: number): Vector2D {
-    let direction = oringV.DirectionTo(targetV);
-    let t = elapsedTime / travelTime;
-    if(t > 1.05){
-        t = 1.05;
+export function Interpolate(currentPosition: Vector2D, targetPosition: Vector2D, speed: number, elapsedTime: number): Vector2D {
+    if(Vector2D.Equals(currentPosition, targetPosition) || speed === 0 || elapsedTime === 0)
+    { 
+        return currentPosition;
     }
-    return new Vector2D(oringV.x + direction.x * t, oringV.y + direction.y * t);
+    let direction = currentPosition.DirectionTo(targetPosition);
+    return Vector2D.Add(currentPosition, Vector2D.Multiply(direction.Normalize(), speed * elapsedTime));
 }
 
 export function CalculateTravelTime(oringV: Vector2D, targetV: Vector2D, speed: number): number {

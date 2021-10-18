@@ -1,5 +1,5 @@
 import { Character } from './Character';
-import { Vector2D } from '../Managers/Vector2D';
+import { Vector2D } from '../Helpers/Vector2D';
 import { CalculateTravelTime } from '../Managers/ClientEngine';
 
 export class NPC extends Character
@@ -31,15 +31,12 @@ export class NPC extends Character
     
     SyncPosition(syncData)
     {
-        let newX = parseFloat(syncData.RequestData.x);
-        let newY = parseFloat(syncData.RequestData.y);
+        this.position = this.targetPosition;
+        this.targetPosition = new Vector2D(parseFloat(syncData.RequestData.x), parseFloat(syncData.RequestData.y)); 
 
-        this.position = new Vector2D(this.targetPosition.x, this.targetPosition.y);
-        this.targetPosition = new Vector2D(newX, newY); 
+        //this.originPosition = new Vector2D(this.position.x, this.position.y);
 
-        this.originPosition = new Vector2D(this.position.x, this.position.y);
-
-        this.elapsedTime = 0;
-        this.travelTime = CalculateTravelTime(this.originPosition, this.targetPosition, this.speed);
+        //this.elapsedTime = 0;
+        //this.travelTime = CalculateTravelTime(this.originPosition, this.targetPosition, this.speed);
     }
 }

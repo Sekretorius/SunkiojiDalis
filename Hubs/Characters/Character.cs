@@ -16,9 +16,6 @@ namespace SignalRWebPack.Character
         public float health;
         public string sprite;
         public int areaId;
-        public float x;
-        public float y;
-
         public int width;
         public int height;
         public int frameX;
@@ -34,8 +31,7 @@ namespace SignalRWebPack.Character
             float health = 0, 
             string sprite = null, 
             int areaId = 0, 
-            int x = 0, 
-            int y = 0, 
+            Vector2D position = null,
             int width = 0, 
             int height = 0, 
             int frameX = 0, 
@@ -48,8 +44,7 @@ namespace SignalRWebPack.Character
             this.sprite = sprite;
             this.areaId = areaId;
 
-            this.x = x;
-            this.y = y;
+            this.Position = position;
             this.speed = speed;
             this.moving = moving;
 
@@ -74,8 +69,8 @@ namespace SignalRWebPack.Character
                 { "health", health.ToString() },
                 { "sprite", sprite },
                 { "areaId", areaId.ToString() },
-                { "x", x.ToString() },
-                { "y", y.ToString() },
+                { "x", Position.X.ToString() },
+                { "y", Position.Y.ToString() },
                 { "speed", speed.ToString() },
                 { "width", width.ToString() },
                 { "height", height.ToString() },

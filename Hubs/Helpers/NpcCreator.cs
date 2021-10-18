@@ -15,9 +15,9 @@ namespace SignalRWebPack.Managers
             switch (npcType)
             {
                 case NpcType.Friendly:
-                    return new FriendlyNpc("Friendly", x: 50, y: 50, width: 32, height: 48, sprite: "resources/characters/player-green.png", speed: 30);
+                    return new FriendlyNpc("Friendly", position: new Vector2D(50, 50), width: 32, height: 48, sprite: "resources/characters/player-green.png", speed: 30);
                 case NpcType.Enemy:
-                    return new EnemyNpc("Enemy", x: 10, y: 10, width: 32, height: 48, sprite: "resources/characters/player-blue.png", speed: 30);
+                    return new EnemyNpc("Enemy", position: new Vector2D(100, 100), width: 32, height: 48, sprite: "resources/characters/player-blue.png", speed: 30);
                 default:
                     return null;
             }
