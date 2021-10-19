@@ -20,6 +20,8 @@ const player = {
   frameX: 0,
   frameY: 0,
   speed: 5,
+  worldX: 3,
+  worldY: 3,
   moving: false,
   sprite: "resources/characters/player-red.png"
 };
@@ -39,14 +41,16 @@ function getItems() {
 export var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").withAutomaticReconnect().build();
 
 connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
-  otherPlayers = JSON.parse(newPlayersList);
+    otherPlayers = JSON.parse(newPlayersList);
   //to do: check coordinates with current player - take server coordinates
   for(const element of otherPlayers) {
-    if(element.id === player.id)
+    if(element.id == player.id)
     {
       player.id = element.id;
       player.x = element.x;
       player.y = element.y;
+      player.worldX = element.worldX;
+      player.worldY = element.worldY;
       break;
     }
   }
@@ -57,7 +61,8 @@ connection.on("RecieveItemInfo", function (newItems) {
 });
 
 connection.on("RecieveId", function (id) {
-  player.id = id;
+    player.id = id;
+    console.log(player.id);
 });
 
 connection.start().then(function () {
