@@ -35,7 +35,10 @@ module.exports = {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(),
+        new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: [
+            '**/*',
+            '!resources/**',
+        ], }),
         new HtmlWebpackPlugin({
             template: "./src/index.html"
         }),
