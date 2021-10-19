@@ -84,11 +84,11 @@ namespace SignalRWebPack.Hubs
                     Console.WriteLine("Creating weapon");
                     return factory.CreateWeapon(id, spritePath, name, weight, quantity, x, y, -1, rd.Next(1,11));
                 case 5 or 6:
-                    spritePath = PickRandomItemSprite("resources/items/weapon/weapon");
+                    spritePath = PickRandomItemSprite("resources/items/food/food");
                     Console.WriteLine("Creating food");
                     return factory.CreateFood(id, spritePath, name, weight, quantity, x, y, -1, rd.Next(1,101));
                 case 7 or 8:
-                    spritePath = PickRandomItemSprite("resources/items/weapon/weapon");
+                    spritePath = PickRandomItemSprite("resources/items/potion/potion");
                     Console.WriteLine("Creating potion");
                     return factory.CreatePotion(id, spritePath, name, weight, quantity, x, y, -1, "Useless ability");
                 default:
