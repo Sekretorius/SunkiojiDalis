@@ -65,12 +65,12 @@ namespace SunkiojiDalis.Engine
             networkManager = new NetworkManager();
             networkManager.SetHubContext(Program.IHubContext);
 
-            NpcCreator npcCreator = new NpcCreator();
-            NPC friendly = npcCreator.FactoryMethod(NpcType.Friendly);
-            NPC enemy = npcCreator.FactoryMethod(NpcType.Enemy);
+            //NpcCreator npcCreator = new NpcCreator();
+            //NPC friendly = npcCreator.FactoryMethod(NpcType.Friendly);
+            //NPC enemy = npcCreator.FactoryMethod(NpcType.Enemy);
             
-            friendly.SetMoveAlgorithm(new Stand());
-            enemy.SetMoveAlgorithm(new Walk());
+            //friendly.SetMoveAlgorithm(new Stand());
+            //enemy.SetMoveAlgorithm(new Walk());
         }
 
         //creates instance only on server

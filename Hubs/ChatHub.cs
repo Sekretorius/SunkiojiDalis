@@ -11,7 +11,7 @@ using System.Numerics;
 namespace SunkiojiDalis.Hubs
 {
     [JsonObject(MemberSerialization.Fields)]
-    public class Player : IObserver
+    public class Player
     {
         private int id;
         public int x;
@@ -106,28 +106,28 @@ namespace SunkiojiDalis.Hubs
             var convertedPlayer = JsonConvert.DeserializeObject<Player>(player);
 
 
-            if (convertedPlayer.x <= 50)
+            if (convertedPlayer.x <= World.transitionOffset)
             {
                 if (convertedPlayer.worldX > 0)
                 {
                     await MovePlayer(convertedPlayer, -1 , 0, 700, convertedPlayer.y);
                 }
             }
-            else if (convertedPlayer.x >= 750)
+            else if (convertedPlayer.x >= World.canvasWidth - World.transitionOffset)
             {
                 if (convertedPlayer.worldX < World.width-1)
                 {
                     await MovePlayer(convertedPlayer, 1 , 0, 100, convertedPlayer.y);
                 }
             }
-            else if (convertedPlayer.y <= 50)
+            else if (convertedPlayer.y <= World.transitionOffset)
             {
                 if (convertedPlayer.worldY > 0)
                 {
                     await MovePlayer(convertedPlayer, 0, -1, convertedPlayer.x, 400);
                 }
             }
-            else if (convertedPlayer.y >= 450)
+            else if (convertedPlayer.y >= World.canvasHeight - World.transitionOffset)
             {
                 if (convertedPlayer.worldY < World.height-1)
                 {

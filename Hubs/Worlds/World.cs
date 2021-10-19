@@ -8,7 +8,10 @@ namespace SunkiojiDalis.Hubs.Worlds
         public const int width = 5;
         public const int height = 5;
 
-        List<IObserver> observables = new List<IObserver>();
+        public const int canvasWidth = 800;
+        public const int canvasHeight = 500;
+
+        public const int transitionOffset = 50;
 
         private static World instance;
         public static World Instance
