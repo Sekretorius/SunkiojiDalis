@@ -11,6 +11,6 @@ namespace SignalRWebPack.Managers
 {
     public interface Creator<T, Ty>
     {
-        T FactoryMethod(Ty type, string subtype);
+        T FactoryMethod(Ty type, string subtype, string area);
     }
 }
