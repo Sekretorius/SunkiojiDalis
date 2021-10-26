@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using SignalRWebPack.Engine;
 using SignalRWebPack.Hubs.Worlds;
+using SignalRWebPack.Network;
 
 namespace SignalRWebPack.Hubs
 {
@@ -24,6 +25,8 @@ namespace SignalRWebPack.Hubs
         private string sprite;
         public int worldX;
         public int worldY;
+        [JsonIgnore]
+        public IClientProxy proxy {get; set;}
 
         public Player(int id, int x, int y, int width, int height, int frameX, int frameY, int speed, bool moving, string sprite, int worldX, int worldY) {
             this.id = id;
@@ -92,7 +95,9 @@ namespace SignalRWebPack.Hubs
                                          out int weight,
                                          out int quantity,
                                          out int x,
-                                         out int y);
+                                         out int y,
+                                         out int worldX,
+                                         out int worldY);
             switch(randNum) {
                 case 1 or 2:
                     spritePath = PickRandomItemSprite("resources/items/armor/armor");
@@ -117,7 +122,7 @@ namespace SignalRWebPack.Hubs
             return nullItem;
         }
 
-        public static void GenerateRandomItemAttributes(out int id, out string name, out int weight, out int quantity, out int x, out int y) {
+        public static void GenerateRandomItemAttributes(out int id, out string name, out int weight, out int quantity, out int x, out int y, out int worldX, out int worldY) {
             Random rd = new Random();
             id = rd.Next(1, 99999);
             while(items.ContainsKey(id)) {
@@ -128,6 +133,8 @@ namespace SignalRWebPack.Hubs
             quantity = rd.Next(1,4);
             x = rd.Next(20, 780);
             y = rd.Next(20, 480);
+            worldX = 0;
+            worldY = 0;
         }
 
         public static string PickRandomItemSprite(string prefix) {
@@ -146,13 +153,13 @@ namespace SignalRWebPack.Hubs
             int rand_num = rd.Next(1, 99999);
             var convertedPlayer = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(player);
             convertedPlayer.setId(rand_num);
+            convertedPlayer.proxy = Clients.Caller;
             PlayersList.players[rand_num] = convertedPlayer;
             await Clients.Caller.SendAsync("RecieveId", Newtonsoft.Json.JsonConvert.SerializeObject(convertedPlayer.getId()));
 
             World.Instance.AddPlayer(PlayersList.players[rand_num]);
             await Groups.AddToGroupAsync(Context.ConnectionId,convertedPlayer.GetGroupId());
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY) ));
-
             await ServerEngine.NetworkManager.OnNewClientConnected(Clients.Caller);
         }
 
@@ -167,13 +174,15 @@ namespace SignalRWebPack.Hubs
             // Entering new group
             PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
             await Groups.AddToGroupAsync(Context.ConnectionId, convertedPlayer.GetGroupId());
+            await ServerEngine.NetworkManager.OnAreaChange(convertedPlayer);
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
         }
 
         public async Task UpdatePlayerInfo(string player)
         {
             var convertedPlayer = JsonConvert.DeserializeObject<Player>(player);
-
+            var newPlayer = PlayersList.players[convertedPlayer.getId()];
+            convertedPlayer.proxy = newPlayer.proxy;
 
             if (convertedPlayer.x <= World.transitionOffset)
             {
@@ -206,6 +215,8 @@ namespace SignalRWebPack.Hubs
 
             PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
             World.Instance.UpdatePlayer(convertedPlayer);
+            // Receive NPCs, items, obstacles as well
+            //await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutNPCs", JsonConvert.SerializeObject(World.Instance.GetNPCs(convertedPlayer.worldX, convertedPlayer.worldY)));
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
         }
 

@@ -34,6 +34,11 @@ function CreateNewObject(guid: string, objectData: any) {
     }
 }
 
+function RemoveAllObjects() {
+    ClientObjects = {};
+    ClientObjectCount = 0;
+}
+
 export function Interpolate(currentPosition: Vector2D, targetPosition: Vector2D, speed: number, elapsedTime: number): Vector2D {
     if(Vector2D.Equals(currentPosition, targetPosition) || speed === 0 || elapsedTime === 0)
     { 

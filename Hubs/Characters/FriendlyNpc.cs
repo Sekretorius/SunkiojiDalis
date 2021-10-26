@@ -14,7 +14,7 @@ namespace SignalRWebPack.Character
             string name = null, 
             float health = 0, 
             string sprite = null, 
-            int areaId = 0, 
+            string areaId = "", 
             Vector2D position = null, 
             int width = 0, 
             int height = 0, 

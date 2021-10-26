@@ -28,6 +28,10 @@ function CreateNewObject(guid, objectData) {
         }
     }
 }
+function RemoveAllObjects() {
+    exports.ClientObjects = {};
+    exports.ClientObjectCount = 0;
+}
 function Interpolate(currentPosition, targetPosition, speed, elapsedTime) {
     if (Vector2D_1.Vector2D.Equals(currentPosition, targetPosition) || speed === 0 || elapsedTime === 0) {
         return currentPosition;

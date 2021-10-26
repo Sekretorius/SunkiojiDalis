@@ -237,13 +237,43 @@ namespace SignalRWebPack.Network
             }
         }
 
+        public List<NetworkRequest> FormGroupObjectCreateRequest(string groupId) //to do: make forms for group areas 
+        {
+            lock(ProccessNetworkObjectLock)
+            {
+                List<NetworkRequest> createRequests = new List<NetworkRequest>();
+                foreach (NetworkObject networkObject in networkObjects)
+                {
+                    if(!networkObject.CreateOnClient || networkObject.AreaId != groupId) continue;
+                    createRequests.Add(new NetworkRequest(
+                        networkObject.GUID,
+                        nameof(MainNetworkRequests.CreateClientObject),
+                        JsonConvert.SerializeObject(networkObject.OnClientSideCreation())
+                    ));
+                }
+                return createRequests;
+            }
+        }
+
         public async Task OnNewClientConnected(IClientProxy client) //to do: has to have different functionality // if it spawns in area ...
         {
-            List<NetworkRequest> requestForms = FormAllObjectCreateRequest();
+            List<NetworkRequest> requestForms = FormGroupObjectCreateRequest("3,3");
             if(requestForms.Count > 0)
             {
                 string requestData = JsonConvert.SerializeObject(requestForms);
                 await client.SendAsync(ClientRequestHandlerMethod, requestData);
+            }
+        }
+
+        public async Task OnAreaChange(Player player) //to do: has to have different functionality // if it spawns in area ...
+        {
+            var requestData = JsonConvert.SerializeObject(new NetworkRequest("", nameof(MainNetworkRequests.RemoveAllObjects), ""));
+            await player.proxy.SendAsync(ClientRequestHandlerMethod, requestData);
+            List<NetworkRequest> requestForms = FormGroupObjectCreateRequest(player.GetGroupId());
+            if(requestForms.Count > 0)
+            {
+                string serializedData = JsonConvert.SerializeObject(requestForms);
+                await player.proxy.SendAsync(ClientRequestHandlerMethod, serializedData);
             }
         }
 
@@ -266,6 +296,7 @@ namespace SignalRWebPack.Network
     public abstract class NetworkObject : INetworkObject
     {
         [JsonIgnore] private Vector2D position;
+        [JsonIgnore] public string AreaId {get; set;}
         [JsonIgnore] protected string guid = string.Empty;
         [JsonIgnore] protected bool createOnClient = true;
         [JsonIgnore] protected Collider collider;
@@ -342,6 +373,7 @@ namespace SignalRWebPack.Network
     public enum MainNetworkRequests
     {
         CreateClientObject,
+        RemoveAllObjects
     }
 #endregion
 }

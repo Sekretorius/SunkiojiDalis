@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using SignalRWebPack.Character;
+using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack.Hubs.Worlds
 {
@@ -42,6 +44,39 @@ namespace SignalRWebPack.Hubs.Worlds
             return world[x, y].players.Values.ToList();
         }
 
+        public List<Item> GetItems(int x, int y)
+        {
+            return world[x, y].items.Values.ToList();
+        }
+
+        public List<NPC> GetNPCs(int x, int y)
+        {
+            return world[x, y].npcs.Values.ToList();
+        }
+
+        public List<Obstacle> GetObstacles(int x, int y)
+        {
+            return world[x, y].obstacles.Values.ToList();
+        }
+
+        public void AddNPC(NPC npc)
+        {
+            var indexes = ParseStringToIntArray(npc.AreaId);
+            world[indexes[0], indexes[1]].AddNPC(npc);
+        }
+
+        public void RemoveNPC(NPC npc)
+        {
+            var indexes = ParseStringToIntArray(npc.AreaId);
+            world[indexes[0], indexes[1]].RemoveNPC(npc);
+        }
+
+        public void UpdateNPC(NPC npc)
+        {
+            var indexes = ParseStringToIntArray(npc.AreaId);
+            world[indexes[0], indexes[1]].UpdateNPC(npc);
+        }
+
         public void AddPlayer(Player player)
         {
             world[player.worldX, player.worldY].AddPlayer(player);
@@ -63,6 +98,11 @@ namespace SignalRWebPack.Hubs.Worlds
             RemovePlayer(player);
             player.MoveToArea(worldX, worldY, x, y);
             AddPlayer(player);
+        }
+
+        public static int[] ParseStringToIntArray(string arr)
+        {
+            return arr.Split(',').Select(int.Parse).ToArray();
         }
     } 
 }

@@ -24,7 +24,7 @@ export class Character
         this.name = characterData.name;
         this.health = parseFloat(characterData.health);
         this.sprite = characterData.sprite;
-        this.areaId = parseInt(characterData.areaId);
+        this.areaId = characterData.areaId;
         this.position = new Vector2D(parseFloat(characterData.x), parseFloat(characterData.y));
         this.width = parseInt(characterData.width);
         this.height = parseInt(characterData.height);

@@ -30,20 +30,19 @@ namespace SignalRWebPack.Character
             string name = null, 
             float health = 0, 
             string sprite = null, 
-            int areaId = 0, 
             Vector2D position = null,
             int width = 0, 
             int height = 0, 
             int frameX = 0, 
-            int frameY = 0, 
+            int frameY = 0,
+            string areaId = "",
             int speed = 0, 
             bool moving = false) : base()
         {
             this.name = name;
             this.health = health;
             this.sprite = sprite;
-            this.areaId = areaId;
-
+            this.AreaId = areaId;
             this.Position = position;
             this.speed = speed;
             this.moving = moving;

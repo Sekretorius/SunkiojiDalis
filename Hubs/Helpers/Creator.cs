@@ -5,11 +5,12 @@ using System;
 using Newtonsoft.Json;
 using System.Linq;
 using SignalRWebPack.Character;
+using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack.Managers
 {
-    public interface Creator
+    public interface Creator<T, Ty>
     {
-        NPC FactoryMethod(NpcType npcType);
+        T FactoryMethod(Ty type, string subtype);
     }
 }

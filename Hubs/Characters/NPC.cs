@@ -13,14 +13,14 @@ namespace SignalRWebPack.Character
             string name = null, 
             float health = 0, 
             string sprite = null, 
-            int areaId = 0, 
+            string areaId = "", 
             Vector2D position = null, 
             int width = 0, 
             int height = 0, 
             int frameX = 0, 
             int frameY = 0, 
             int speed = 0,
-            bool moving = false) : base(name, health, sprite, areaId, position, width, height, frameX, frameY, speed, moving){}
+            bool moving = false) : base(name, health, sprite, position, width, height, frameX, frameY, areaId, speed, moving){}
         
         public abstract void Shout();
         public virtual void SetAttackAlgorithm(AttackAlgorithm attackAlgorithm)
@@ -30,6 +30,10 @@ namespace SignalRWebPack.Character
         public virtual void SetMoveAlgorithm(MoveAlgorithm moveAlgorithm)
         {
             MoveAlgorithm = moveAlgorithm;
+        }
+
+        public string getName() {
+            return this.name;
         }
     }
 
