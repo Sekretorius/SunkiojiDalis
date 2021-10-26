@@ -267,7 +267,7 @@ namespace SignalRWebPack.Network
 
         public async Task OnAreaChange(Player player) //to do: has to have different functionality // if it spawns in area ...
         {
-            var requestData = JsonConvert.SerializeObject(new NetworkRequest("", nameof(MainNetworkRequests.RemoveAllObjects), ""));
+            var requestData = JsonConvert.SerializeObject(new List<NetworkRequest>() { new NetworkRequest("", nameof(MainNetworkRequests.RemoveAllObjects), "")});
             await player.proxy.SendAsync(ClientRequestHandlerMethod, requestData);
             List<NetworkRequest> requestForms = FormGroupObjectCreateRequest(player.GetGroupId());
             if(requestForms.Count > 0)

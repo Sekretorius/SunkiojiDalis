@@ -11,7 +11,11 @@ connection.on("ClientRequestHandler", function (requests) {
 
 function ProccessServerRequests(requests: any){
     for(const request of requests) {
-        let requestData = JSON.parse(request.RequestData);
+        let requestData = null;
+        if(request.RequestData)
+        {
+            requestData = JSON.parse(request.RequestData);
+        }
         let serverRequest = new NetworkRequest(request.RequestObjectGuid, request.RequestMethod, requestData);
         HandleServerRequests(serverRequest);
     }

@@ -8,7 +8,7 @@ export var ClientObjectCount: number = 0;
 
 export var ClientEngineMethods: any = {};
 ClientEngineMethods["CreateClientObject"] = CreateClientObject;
-
+ClientEngineMethods["RemoveAllObjects"] = RemoveAllObjects;
 
 function CreateClientObject(serverRequest: NetworkRequest) {
     CreateNewObject(serverRequest.RequestObjectGuid, serverRequest.RequestData);
@@ -34,7 +34,7 @@ function CreateNewObject(guid: string, objectData: any) {
     }
 }
 
-function RemoveAllObjects() {
+function RemoveAllObjects(guid: string, objectData: any) {
     ClientObjects = {};
     ClientObjectCount = 0;
 }

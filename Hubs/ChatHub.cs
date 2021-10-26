@@ -146,7 +146,7 @@ namespace SignalRWebPack.Hubs
 
     public class ChatHub : Hub
     {
-        
+        private static readonly object PlayerProccessLock = new object();
         public async Task JoinGame(string player)
         {   
             Random rd = new Random();
@@ -154,10 +154,12 @@ namespace SignalRWebPack.Hubs
             var convertedPlayer = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(player);
             convertedPlayer.setId(rand_num);
             convertedPlayer.proxy = Clients.Caller;
-            PlayersList.players[rand_num] = convertedPlayer;
+            lock(PlayerProccessLock)
+            {
+                PlayersList.players[rand_num] = convertedPlayer;
+                World.Instance.AddPlayer(PlayersList.players[rand_num]);
+            }
             await Clients.Caller.SendAsync("RecieveId", Newtonsoft.Json.JsonConvert.SerializeObject(convertedPlayer.getId()));
-
-            World.Instance.AddPlayer(PlayersList.players[rand_num]);
             await Groups.AddToGroupAsync(Context.ConnectionId,convertedPlayer.GetGroupId());
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY) ));
             await ServerEngine.NetworkManager.OnNewClientConnected(Clients.Caller);
@@ -172,7 +174,10 @@ namespace SignalRWebPack.Hubs
             await Clients.Group(PlayersList.players[convertedPlayer.getId()].GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
 
             // Entering new group
-            PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
+            lock(PlayerProccessLock)
+            {
+                PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
+            }
             await Groups.AddToGroupAsync(Context.ConnectionId, convertedPlayer.GetGroupId());
             await ServerEngine.NetworkManager.OnAreaChange(convertedPlayer);
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
@@ -181,8 +186,11 @@ namespace SignalRWebPack.Hubs
         public async Task UpdatePlayerInfo(string player)
         {
             var convertedPlayer = JsonConvert.DeserializeObject<Player>(player);
-            var newPlayer = PlayersList.players[convertedPlayer.getId()];
-            convertedPlayer.proxy = newPlayer.proxy;
+            lock(PlayerProccessLock)
+            {
+                var newPlayer = PlayersList.players[convertedPlayer.getId()];
+                convertedPlayer.proxy = newPlayer.proxy;
+            }
 
             if (convertedPlayer.x <= World.transitionOffset)
             {
@@ -212,9 +220,11 @@ namespace SignalRWebPack.Hubs
                     await MovePlayer(convertedPlayer, 0, 1, convertedPlayer.x, 100);
                 }
             }
-
-            PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
-            World.Instance.UpdatePlayer(convertedPlayer);
+            lock(PlayerProccessLock)
+            {
+                PlayersList.players[convertedPlayer.getId()] = convertedPlayer;
+                World.Instance.UpdatePlayer(convertedPlayer);
+            }
             // Receive NPCs, items, obstacles as well
             //await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutNPCs", JsonConvert.SerializeObject(World.Instance.GetNPCs(convertedPlayer.worldX, convertedPlayer.worldY)));
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));

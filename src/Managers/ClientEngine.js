@@ -8,6 +8,7 @@ exports.ClientObjects = {}; //objects that have been created
 exports.ClientObjectCount = 0;
 exports.ClientEngineMethods = {};
 exports.ClientEngineMethods["CreateClientObject"] = CreateClientObject;
+exports.ClientEngineMethods["RemoveAllObjects"] = RemoveAllObjects;
 function CreateClientObject(serverRequest) {
     CreateNewObject(serverRequest.RequestObjectGuid, serverRequest.RequestData);
 }
@@ -28,7 +29,7 @@ function CreateNewObject(guid, objectData) {
         }
     }
 }
-function RemoveAllObjects() {
+function RemoveAllObjects(guid, objectData) {
     exports.ClientObjects = {};
     exports.ClientObjectCount = 0;
 }

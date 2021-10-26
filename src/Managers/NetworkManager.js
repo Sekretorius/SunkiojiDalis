@@ -12,7 +12,10 @@ index_1.connection.on("ClientRequestHandler", function (requests) {
 function ProccessServerRequests(requests) {
     for (var _i = 0, requests_1 = requests; _i < requests_1.length; _i++) {
         var request = requests_1[_i];
-        var requestData = JSON.parse(request.RequestData);
+        var requestData = null;
+        if (request.RequestData) {
+            requestData = JSON.parse(request.RequestData);
+        }
         var serverRequest = new NetworkRequest(request.RequestObjectGuid, request.RequestMethod, requestData);
         HandleServerRequests(serverRequest);
     }
