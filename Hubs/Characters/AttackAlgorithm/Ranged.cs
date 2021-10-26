@@ -5,7 +5,7 @@ using System;
 using Newtonsoft.Json;
 using System.Linq;
 
-namespace SignalRWebPack.Character
+namespace SignalRWebPack.Characters
 {
     public class Ranged : AttackAlgorithm
     {

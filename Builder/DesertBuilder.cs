@@ -1,6 +1,6 @@
 using SignalRWebPack.Hubs.Worlds;
 using SignalRWebPack.Managers;
-using SignalRWebPack.Character;
+using SignalRWebPack.Characters;
 using SignalRWebPack.Hubs;
 using SignalRWebPack.Obstacles;
 

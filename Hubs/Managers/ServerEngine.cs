@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using SignalRWebPack.Hubs;
 using SignalRWebPack.Network;
 using SignalRWebPack;
-using SignalRWebPack.Character;
+using SignalRWebPack.Characters;
 using SignalRWebPack.Managers;
 using SignalRWebPack.Hubs.Worlds;
 
@@ -92,6 +92,16 @@ namespace SignalRWebPack.Engine
             // Add NPCs, items, obstacles to World.Instance...
             World.Instance.AddNPC(friendly);
             World.Instance.AddNPC(enemy);
+            
+            SpearAttackDecorator s = new SpearAttackDecorator(friendly);
+            SwordAttackDecorator ss = new SwordAttackDecorator(s);
+            ss.Attack();
+
+            NPC asd = (NPC)enemy.DeepCopy();
+            Console.WriteLine(asd.name + ", " + asd.areaId + ", " + asd.Position.X+ ", " +asd.Position.Y);
+            asd.Position.X = 200;
+            World.Instance.AddNPC(asd);
+
         }
 
         //creates instance only on server

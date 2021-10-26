@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using Newtonsoft.Json;
 using System.Linq;
-using SignalRWebPack.Character;
+using SignalRWebPack.Characters;
 using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack.Managers
