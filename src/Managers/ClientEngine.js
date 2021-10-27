@@ -4,6 +4,16 @@ exports.CalculateTravelTime = exports.Interpolate = exports.ClientEngineMethods 
 var EnemyNpc_1 = require("../Characters/EnemyNpc");
 var FriendlyNpc_1 = require("../Characters/FriendlyNpc");
 var Vector2D_1 = require("../Helpers/Vector2D");
+var PassableObstacle_1 = require("../Obstacles/PassableObstacle");
+var ImpassableObstacle_1 = require("../Obstacles/ImpassableObstacle");
+var CommonArmor_1 = require("../Items/Equipables/Armors/ArmorRarities/CommonArmor");
+var LegendaryArmor_1 = require("../Items/Equipables/Armors/ArmorRarities/LegendaryArmor");
+var CommonWeapon_1 = require("../Items/Equipables/Weapons/WeaponRarities/CommonWeapon");
+var LegendaryWeapon_1 = require("../Items/Equipables/Weapons/WeaponRarities/LegendaryWeapon");
+var CommonFood_1 = require("../Items/Consumables/Foods/FoodRarities/CommonFood");
+var LegendaryFood_1 = require("../Items/Consumables/Foods/FoodRarities/LegendaryFood");
+var CommonPotion_1 = require("../Items/Consumables/Potions/PotionRarities/CommonPotion");
+var LegendaryPotion_1 = require("../Items/Consumables/Potions/PotionRarities/LegendaryPotion");
 exports.ClientObjects = {}; //objects that have been created
 exports.ClientObjectCount = 0;
 exports.ClientEngineMethods = {};
@@ -21,6 +31,36 @@ function CreateNewObject(guid, objectData) {
                 break;
             case "EnemyNpc":
                 newObject = new EnemyNpc_1.EnemyNpc(guid, objectData);
+                break;
+            case "ImpassableObstacle":
+                newObject = new ImpassableObstacle_1.ImpassableObstacle(guid, objectData);
+                break;
+            case "PassableObstacle":
+                newObject = new PassableObstacle_1.PassableObstacle(guid, objectData);
+                break;
+            case "CommonArmor":
+                newObject = new CommonArmor_1.CommonArmor(guid, objectData);
+                break;
+            case "LegendaryArmor":
+                newObject = new LegendaryArmor_1.LegendaryArmor(guid, objectData);
+                break;
+            case "CommonWeapon":
+                newObject = new CommonWeapon_1.CommonWeapon(guid, objectData);
+                break;
+            case "LegendaryWeapon":
+                newObject = new LegendaryWeapon_1.LegendaryWeapon(guid, objectData);
+                break;
+            case "CommonPotion":
+                newObject = new CommonPotion_1.CommonPotion(guid, objectData);
+                break;
+            case "LegendaryPotion":
+                newObject = new LegendaryPotion_1.LegendaryPotion(guid, objectData);
+                break;
+            case "CommonFood":
+                newObject = new CommonFood_1.CommonFood(guid, objectData);
+                break;
+            case "LegendaryFood":
+                newObject = new LegendaryFood_1.LegendaryFood(guid, objectData);
                 break;
         }
         if (newObject !== null) {
