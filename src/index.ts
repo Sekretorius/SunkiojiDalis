@@ -24,6 +24,7 @@ const player = {
   speed: 5,
   worldX: 3,
   worldY: 3,
+  background: "resources/backgrounds/grass_background.png",
   moving: false,
   sprite: "resources/characters/player-red.png"
 };
@@ -53,6 +54,8 @@ connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
       player.y = element.y;
       player.worldX = element.worldX;
       player.worldY = element.worldY;
+      player.background = element.background;
+      console.log(player.background)
       break;
     }
   }
@@ -78,7 +81,7 @@ connection.start().then(function () {
 });
 
 const background = new Image();
-background.src = "resources/backgrounds/grass_background.png";
+background.src = player.background;
 
 function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
   const playerSprite = new Image();
@@ -147,6 +150,7 @@ function animate() {
   if(elapsed > fpsInterval) {
     then = now - (elapsed % fpsInterval);
     context.clearRect(0, 0, canvas.width, canvas.height)
+    background.src = player.background;
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     if (otherPlayers.length > 0) {
