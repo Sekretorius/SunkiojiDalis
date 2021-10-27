@@ -1,5 +1,7 @@
 import * as signalR from "@microsoft/signalr";
 import { ClientObjects, ClientObjectCount, Interpolate } from "./Managers/ClientEngine"
+import { Obstacle } from "./Obstacles/Obstacle"
+import { Item } from "./Items/Item"
 
 (<HTMLInputElement> document.getElementById("canvas")).disabled = true;
 const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -167,18 +169,26 @@ function animate() {
       for(const objectKey in ClientObjects) {
         let el = ClientObjects[objectKey];
         if(el == undefined) continue;
-
-        el.position = Interpolate(el.position, el.targetPosition, el.speed, (now - timeThen) / 1000);
-        drawSprite(
-          el.sprite,
-          el.width * el.frameX,
-          el.height * el.frameY,
-          el.width,
-          el.height,
-          el.position.x,
-          el.position.y,
-          el.width,
-          el.height);
+        if(el instanceof Obstacle || el instanceof Item) {
+          const img = new Image();
+          img.src = el.Sprite;
+          context.drawImage(
+            img,
+            el.X,
+            el.Y)
+        } else {
+          el.position = Interpolate(el.position, el.targetPosition, el.speed, (now - timeThen) / 1000);
+          drawSprite(
+            el.sprite,
+            el.width * el.frameX,
+            el.height * el.frameY,
+            el.width,
+            el.height,
+            el.position.x,
+            el.position.y,
+            el.width,
+            el.height);
+        }
       }
     }
 
