@@ -49,6 +49,7 @@ const player = {
   speed: 5,
   worldX: 3,
   worldY: 3,
+  background: "resources/backgrounds/grass_background.png",
   moving: false,
   sprite: "resources/characters/player-red.png"
 };
@@ -89,20 +90,23 @@ window.onload = function () {
         return console.error(err.toString());
     });
 
-    connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
-        otherPlayers = JSON.parse(newPlayersList);
-        //to do: check coordinates with current player - take server coordinates
-        for (const element of otherPlayers) {
-            if (element.id == player.id) {
-                player.id = element.id;
-                player.x = element.x;
-                player.y = element.y;
-                player.worldX = element.worldX;
-                player.worldY = element.worldY;
-                break;
-            }
-        }
-    });
+	connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
+		otherPlayers = JSON.parse(newPlayersList);
+	  //to do: check coordinates with current player - take server coordinates
+	  for(const element of otherPlayers) {
+		if(element.id == player.id)
+		{
+		  player.id = element.id;
+		  player.x = element.x;
+		  player.y = element.y;
+		  player.worldX = element.worldX;
+		  player.worldY = element.worldY;
+		  player.background = element.background;
+		  console.log(player.background)
+		  break;
+		}
+	  }
+	});
 
     connection.on("RecieveItemInfo", function (newItems) {
         items = JSON.parse(newItems);
@@ -126,7 +130,7 @@ window.onload = function () {
 
 
 const background = new Image();
-background.src = "resources/backgrounds/grass_background.png";
+background.src = player.background;
 
 function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
   const playerSprite = new Image();
@@ -196,6 +200,7 @@ function animate() {
   if(elapsed > fpsInterval) {
     then = now - (elapsed % fpsInterval);
     context.clearRect(0, 0, canvas.width, canvas.height)
+    background.src = player.background;
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     if (otherPlayers.length > 0) {

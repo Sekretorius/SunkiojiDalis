@@ -8,11 +8,11 @@ namespace SignalRWebPack {
   public class DesertBuilder : IBuilder {
         private int x;
         private int y;
-        private Area desert;
+        private DesertArea desert;
         
         public DesertBuilder(int x, int y)
         {
-            this.desert = new Area(x, y);
+            this.desert = new DesertArea(x, y);
             this.x = x;
             this.y = y;
             this.Reset();
@@ -20,10 +20,9 @@ namespace SignalRWebPack {
         
         public void Reset()
         {
-            this.desert = new Area(this.x, this.y);
+            this.desert = new DesertArea(this.x, this.y);
         }
         
-        // All production steps work with the same product instance.
         public void AddNPCs()
         {
             var npcCreator = new NpcCreator();
@@ -47,9 +46,9 @@ namespace SignalRWebPack {
             this.desert.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
         }
 
-        public Area GetProduct()
+        public DesertArea GetProduct()
         {
-            Area result = this.desert;
+            DesertArea result = this.desert;
             this.Reset();
             World.Instance.SwapArea(result);
             return result;

@@ -12,6 +12,7 @@ namespace SignalRWebPack.Hubs.Worlds
         public Dictionary<int, Item> items { get; private set; } = new Dictionary<int, Item>();
         public Dictionary<string, NPC> npcs { get; private set; } = new Dictionary<string, NPC>();
         public Dictionary<int, Obstacle> obstacles { get; private set; } = new Dictionary<int, Obstacle>();
+        public string background;
 
         public Area(int x, int y)
         {
@@ -77,6 +78,10 @@ namespace SignalRWebPack.Hubs.Worlds
         public void UpdateObstacle(Obstacle obstacle)
         {
             obstacles[obstacle.Id] = obstacle;
+        }
+
+        public virtual int DoSpecialEvent() {
+            return -1;
         }
     }
 }

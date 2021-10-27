@@ -15,5 +15,14 @@ namespace SignalRWebPack.Characters
         {
 
         }
+
+        public override AttackAlgorithm DeepCopy()
+        {
+            return (Melee)this.MemberwiseClone();
+        }
+        public override AttackAlgorithm ShallowCopy()
+        {
+            return (Melee)this.MemberwiseClone();
+        }
     }
 }

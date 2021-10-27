@@ -84,21 +84,12 @@ namespace SignalRWebPack.Characters
         }
 
         public Character DeepCopy(){
-            
+        
             var charas = (Character)this.MemberwiseClone();
-            charas.name = this.name;
-            charas.health = this.health;
-            charas.sprite = this.sprite;
-            charas.areaId = this.areaId;
-            charas.Position.X = this.Position.X;
-            charas.Position.Y = this.Position.Y;
-            charas.speed = this.speed;
-            charas.width = this.width;
-            charas.height = this.height;
-            charas.frameX = this.frameX;
-            charas.frameY = this.frameY;
-            charas.MoveAlgorithm = this.MoveAlgorithm;
-            
+            charas.Position = new Vector2D(this.Position.X, this.Position.Y);
+            charas.MoveAlgorithm = this.MoveAlgorithm.DeepCopy();
+            charas.AttackAlgorithm = this.AttackAlgorithm.DeepCopy(); // reikia pakeist į kitą reference
+
             return charas;
         } 
     }

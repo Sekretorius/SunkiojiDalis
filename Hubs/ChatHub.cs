@@ -27,10 +27,11 @@ namespace SignalRWebPack.Hubs
         private string sprite;
         public int worldX;
         public int worldY;
+        public string background;
         [JsonIgnore]
         public IClientProxy proxy {get; set;}
 
-        public Player(int id, int x, int y, int width, int height, int frameX, int frameY, int speed, bool moving, string sprite, int worldX, int worldY) {
+        public Player(int id, int x, int y, int width, int height, int frameX, int frameY, int speed, bool moving, string sprite, int worldX, int worldY, string background) {
             this.id = id;
             this.x = x;
             this.y = y;
@@ -43,6 +44,7 @@ namespace SignalRWebPack.Hubs
             this.sprite = sprite;
             this.worldX = worldX;
             this.worldY = worldY;
+            this.background = background;
             control = new PlayerControl(this);
             //to do: sync other actions 
         }
@@ -176,7 +178,11 @@ namespace SignalRWebPack.Hubs
 
         public async Task MovePlayer(Player convertedPlayer, int worldX, int worldY, int x, int y)
         {
+            var currentX = PlayersList.players[convertedPlayer.getId()].worldX + worldX;
+            var currentY = PlayersList.players[convertedPlayer.getId()].worldY + worldY;
+            convertedPlayer.background = World.Instance.GetBackground(currentX, currentY);
             World.Instance.MoveToArea(convertedPlayer, worldX, worldY, x, y);
+            
 
             // Leaving the group
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, PlayersList.players[convertedPlayer.getId()].GetGroupId());
