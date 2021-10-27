@@ -39,6 +39,11 @@ namespace SignalRWebPack.Hubs.Worlds
                     world[i, t] = new Area(i, t);
         }
 
+        public void SwapArea(Area area)
+        {
+            world[area.x, area.y] = area;
+        }
+
         public List<Player> GetPlayers(int x, int y)
         {
             return world[x, y].players.Values.ToList();

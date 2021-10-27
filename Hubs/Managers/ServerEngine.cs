@@ -85,13 +85,19 @@ namespace SignalRWebPack.Engine
 
 
             NpcCreator npcCreator = new NpcCreator();
-            NPC friendly = npcCreator.FactoryMethod(NpcType.Friendly, "");
-            NPC enemy = npcCreator.FactoryMethod(NpcType.Enemy, "");
+            NPC friendly = npcCreator.FactoryMethod(NpcType.Friendly, "", $"{3},{3}");
+            NPC enemy = npcCreator.FactoryMethod(NpcType.Enemy, "", $"{2},{3}");
             friendly.SetMoveAlgorithm(new Stand());
             enemy.SetMoveAlgorithm(new Walk());
             // Add NPCs, items, obstacles to World.Instance...
             World.Instance.AddNPC(friendly);
             World.Instance.AddNPC(enemy);
+            var director = new Director();
+            var builder = new DesertBuilder(2, 3);
+            director.Builder = builder;
+            director.BuildArea();
+            var desert = builder.GetProduct();
+            World.Instance.SwapArea(desert);
         }
 
         //creates instance only on server
