@@ -98,7 +98,8 @@ namespace SignalRWebPack.Engine
             director.BuildArea();
             var desert = builder.GetProduct();
             World.Instance.SwapArea(desert);
-            
+            // ČIA BUVO MERGE CONFLICT TAI GALI BŪTI,
+            // KAD NEIŠSISPRENDĖ TINKAMAI
             SpearAttackDecorator s = new SpearAttackDecorator(friendly);
             SwordAttackDecorator ss = new SwordAttackDecorator(s);
             ss.Attack();
