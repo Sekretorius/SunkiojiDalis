@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using SignalRWebPack.Engine;
 
-namespace SignalRWebPack.Character
+namespace SignalRWebPack.Characters
 {
     public class FriendlyNpc : NPC
     {
