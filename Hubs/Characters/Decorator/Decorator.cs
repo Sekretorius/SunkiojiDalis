@@ -10,7 +10,7 @@ namespace SignalRWebPack.Characters
         protected Character character;
        public Decorator(Character chars){
             this.character = chars;
-        }
+       }
 
         public override void Attack(){
             if(character != null){
