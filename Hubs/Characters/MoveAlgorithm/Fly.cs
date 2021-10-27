@@ -13,5 +13,13 @@ namespace SignalRWebPack.Characters
         {
             return currentPosition;
         }
+        public override MoveAlgorithm DeepCopy()
+        {
+            return (Fly)this.MemberwiseClone();
+        }
+        public override MoveAlgorithm ShallowCopy()
+        {
+            return (Fly)this.MemberwiseClone();
+        }
     }
 }

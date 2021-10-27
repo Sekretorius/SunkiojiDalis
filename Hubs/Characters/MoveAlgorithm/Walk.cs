@@ -21,5 +21,14 @@ namespace SignalRWebPack.Characters
             }
             return currentPosition + direction.Normalize() * moveDistance;
         }
+
+        public override MoveAlgorithm DeepCopy()
+        {
+            return (Walk)this.MemberwiseClone();
+        }
+        public override MoveAlgorithm ShallowCopy()
+        {
+            return (Walk)this.MemberwiseClone();
+        }
     }
 }
