@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using SignalRWebPack.Character;
+using SignalRWebPack.Characters;
 using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack.Hubs.Worlds
@@ -37,6 +37,11 @@ namespace SignalRWebPack.Hubs.Worlds
             for (int i = 0; i < world.GetLength(0); i++)
                 for (int t = 0; t < world.GetLength(1); t++)
                     world[i, t] = new Area(i, t);
+        }
+
+        public void SwapArea(Area area)
+        {
+            world[area.x, area.y] = area;
         }
 
         public List<Player> GetPlayers(int x, int y)

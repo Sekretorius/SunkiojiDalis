@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SignalRWebPack.Character;
+using SignalRWebPack.Characters;
 using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack.Hubs.Worlds

@@ -7,7 +7,7 @@ using System.Linq;
 using SignalRWebPack.Engine;
 using SignalRWebPack.Network;
 
-namespace SignalRWebPack.Character
+namespace SignalRWebPack.Characters
 {
     [JsonObject(MemberSerialization.OptOut)]
     public abstract class Character : NetworkObject
@@ -78,5 +78,28 @@ namespace SignalRWebPack.Character
             };
             return characterData;
         }
+
+        public Character ShallowCopy(){
+            return (Character)this.MemberwiseClone();
+        }
+
+        public Character DeepCopy(){
+            
+            var charas = (Character)this.MemberwiseClone();
+            charas.name = this.name;
+            charas.health = this.health;
+            charas.sprite = this.sprite;
+            charas.areaId = this.areaId;
+            charas.Position.X = this.Position.X;
+            charas.Position.Y = this.Position.Y;
+            charas.speed = this.speed;
+            charas.width = this.width;
+            charas.height = this.height;
+            charas.frameX = this.frameX;
+            charas.frameY = this.frameY;
+            charas.MoveAlgorithm = this.MoveAlgorithm;
+            
+            return charas;
+        } 
     }
 }

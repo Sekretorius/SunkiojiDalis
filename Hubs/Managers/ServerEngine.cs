@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using SignalRWebPack.Hubs;
 using SignalRWebPack.Network;
 using SignalRWebPack;
-using SignalRWebPack.Character;
+using SignalRWebPack.Characters;
 using SignalRWebPack.Managers;
 using SignalRWebPack.Hubs.Worlds;
 
@@ -85,13 +85,30 @@ namespace SignalRWebPack.Engine
 
 
             NpcCreator npcCreator = new NpcCreator();
-            NPC friendly = npcCreator.FactoryMethod(NpcType.Friendly, "");
-            NPC enemy = npcCreator.FactoryMethod(NpcType.Enemy, "");
+            NPC friendly = npcCreator.FactoryMethod(NpcType.Friendly, "", $"{3},{3}");
+            NPC enemy = npcCreator.FactoryMethod(NpcType.Enemy, "", $"{2},{3}");
             friendly.SetMoveAlgorithm(new Stand());
             enemy.SetMoveAlgorithm(new Walk());
             // Add NPCs, items, obstacles to World.Instance...
             World.Instance.AddNPC(friendly);
             World.Instance.AddNPC(enemy);
+            var director = new Director();
+            var builder = new DesertBuilder(2, 3);
+            director.Builder = builder;
+            director.BuildArea();
+            var desert = builder.GetProduct();
+            World.Instance.SwapArea(desert);
+            // ČIA BUVO MERGE CONFLICT TAI GALI BŪTI,
+            // KAD NEIŠSISPRENDĖ TINKAMAI
+            SpearAttackDecorator s = new SpearAttackDecorator(friendly);
+            SwordAttackDecorator ss = new SwordAttackDecorator(s);
+            ss.Attack();
+
+            NPC asd = (NPC)enemy.DeepCopy();
+            Console.WriteLine(asd.name + ", " + asd.areaId + ", " + asd.Position.X+ ", " +asd.Position.Y);
+            asd.Position.X = 200;
+            World.Instance.AddNPC(asd);
+
         }
 
         //creates instance only on server
