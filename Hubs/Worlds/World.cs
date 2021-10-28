@@ -15,29 +15,25 @@ namespace SignalRWebPack.Hubs.Worlds
 
         public const int transitionOffset = 50;
 
-        private static World instance;
+        private static readonly World instance = new World();
+        public World()
+        {
+            for (int i = 0; i < world.GetLength(0); i++)
+                for (int t = 0; t < world.GetLength(1); t++)
+                {
+                    world[i, t] = new Area(i, t);
+                    world[i, t].background = "resources/backgrounds/grass_background.png";
+                }
+        }
         public static World Instance
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new World();
-                }
                 return instance;
             }
         }
 
         private Area[,] world = new Area[width, height];
-
-        public World()
-        {
-            for (int i = 0; i < world.GetLength(0); i++)
-                for (int t = 0; t < world.GetLength(1); t++) {
-                    world[i, t] = new Area(i, t);
-                    world[i, t].background = "resources/backgrounds/grass_background.png";
-                }
-        }
 
         public void SwapArea(Area area)
         {
