@@ -19,7 +19,7 @@ namespace SignalRWebPack.Characters
         public int height;
         public int frameX;
         public int frameY;
-
+        public int areaId;
         protected MoveAlgorithm moveAlgorithm; //must be private
         protected AttackAlgorithm attackAlgorithm; //must be private
         public int speed;
@@ -99,9 +99,7 @@ namespace SignalRWebPack.Characters
         
             var charas = (Character)this.MemberwiseClone();
             charas.Position = new Vector2D(this.Position.X, this.Position.Y);
-            charas.MoveAlgorithm = this.MoveAlgorithm.DeepCopy();// reikia pakeist į kitą reference
-            charas.SetMoveAlgorithm(this.GetMoveAlgorithm().DeepCopy());
-            charas.SetAttackAlgorithm(this.GetAttackAlgorithm().DeepCopy());
+            charas.SetMoveAlgorithm(this.GetMoveAlgorithm().DeepCopy());// reikia pakeist į kitą reference
 
            return charas;
         } 
