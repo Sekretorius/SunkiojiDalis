@@ -35,13 +35,19 @@ namespace SignalRWebPack.Hubs.Worlds
         public World()
         {
             for (int i = 0; i < world.GetLength(0); i++)
-                for (int t = 0; t < world.GetLength(1); t++)
+                for (int t = 0; t < world.GetLength(1); t++) {
                     world[i, t] = new Area(i, t);
+                    world[i, t].background = "resources/backgrounds/grass_background.png";
+                }
         }
 
         public void SwapArea(Area area)
         {
             world[area.x, area.y] = area;
+        }
+
+        public string GetBackground(int x, int y){
+            return world[x, y].background;
         }
 
         public List<Player> GetPlayers(int x, int y)
