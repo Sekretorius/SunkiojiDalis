@@ -35,7 +35,7 @@ namespace SignalRWebPack.Facades
             friendly.SetMoveAlgorithm(new Stand());
             enemy.SetMoveAlgorithm(new Walk());
             friendly.SetAttackAlgorithm(new Melee(friendly.AreaId, 0, 0));
-            enemy.SetAttackAlgorithm(new Melee(enemy.AreaId, 0, 50));
+            enemy.SetAttackAlgorithm(new Melee(enemy.AreaId, 10, 50));
             World.Instance.AddNPC(friendly);
             World.Instance.AddNPC(enemy);
         }
