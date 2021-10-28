@@ -22,9 +22,9 @@ namespace SignalRWebPack
             IHost host = CreateHostBuilder(args).Build();
             IHubContext = (IHubContext<ChatHub>)host.Services.GetService(typeof(IHubContext<ChatHub>));
             ServerEngine.Instance.Initialize();
-            host.Run();
-            TestingManager mang = new TestingManager();
+             TestingManager mang = new TestingManager();
             mang.Testing();
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
