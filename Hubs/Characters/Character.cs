@@ -15,14 +15,13 @@ namespace SignalRWebPack.Characters
         public string name;
         public float health;
         public string sprite;
-        public int areaId;
         public int width;
         public int height;
         public int frameX;
         public int frameY;
 
-        public MoveAlgorithm MoveAlgorithm;
-        public AttackAlgorithm AttackAlgorithm;
+        protected MoveAlgorithm moveAlgorithm; //must be private
+        protected AttackAlgorithm attackAlgorithm; //must be private
         public int speed;
         public bool moving;
 
@@ -53,8 +52,22 @@ namespace SignalRWebPack.Characters
             this.frameY = frameY;
         }
 
-        public abstract AttackAlgorithm GetAttackAlgorithm();
-        public abstract MoveAlgorithm GetMoveAlgorithm();
+        public virtual AttackAlgorithm GetAttackAlgorithm()
+        {
+            return this.attackAlgorithm;
+        }
+        public virtual MoveAlgorithm GetMoveAlgorithm()
+        {
+            return this.moveAlgorithm;
+        }
+        public virtual void SetAttackAlgorithm(AttackAlgorithm attackAlgorithm)
+        {
+            this.attackAlgorithm = attackAlgorithm;
+        }
+        public virtual void SetMoveAlgorithm(MoveAlgorithm moveAlgorithm)
+        {
+            this.moveAlgorithm = moveAlgorithm;
+        }
         public abstract void Move();
         public abstract void Attack();
         public abstract void Die();
@@ -67,7 +80,7 @@ namespace SignalRWebPack.Characters
                 { "name", name },
                 { "health", health.ToString() },
                 { "sprite", sprite },
-                { "areaId", areaId.ToString() },
+                { "areaId", AreaId.ToString() },
                 { "x", Position.X.ToString() },
                 { "y", Position.Y.ToString() },
                 { "speed", speed.ToString() },
@@ -78,7 +91,6 @@ namespace SignalRWebPack.Characters
             };
             return characterData;
         }
-
         public Character ShallowCopy(){
             return (Character)this.MemberwiseClone();
         }
@@ -87,10 +99,10 @@ namespace SignalRWebPack.Characters
         
             var charas = (Character)this.MemberwiseClone();
             charas.Position = new Vector2D(this.Position.X, this.Position.Y);
-            charas.MoveAlgorithm = this.MoveAlgorithm.DeepCopy();
-            charas.AttackAlgorithm = this.AttackAlgorithm.DeepCopy(); // reikia pakeist į kitą reference
+            charas.SetMoveAlgorithm(this.GetMoveAlgorithm().DeepCopy());
+            charas.SetAttackAlgorithm(this.GetAttackAlgorithm().DeepCopy());
 
-            return charas;
+           return charas;
         } 
     }
 }

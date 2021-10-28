@@ -191,13 +191,13 @@ namespace SignalRWebPack.Hubs
             var currentX = PlayersList.players[convertedPlayer.getId()].worldX + worldX;
             var currentY = PlayersList.players[convertedPlayer.getId()].worldY + worldY;
             convertedPlayer.background = World.Instance.GetBackground(currentX, currentY);
-            World.Instance.MoveToArea(convertedPlayer, worldX, worldY, x, y);
-            
 
             // Leaving the group
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, PlayersList.players[convertedPlayer.getId()].GetGroupId());
             await Clients.Group(PlayersList.players[convertedPlayer.getId()].GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
 
+            World.Instance.MoveToArea(convertedPlayer, worldX, worldY, x, y);
+            
             // Entering new group
             lock(PlayerProccessLock)
             {

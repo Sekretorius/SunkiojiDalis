@@ -21,7 +21,18 @@ namespace SignalRWebPack.Managers
                     if(subtype == "lion") {
                         return new EnemyNpc("Lion", areaId: area, position: new Vector2D(150, 100), width: 48, height: 48, sprite: "resources/characters/lion.png", speed: 50);
                     }
-                    return new EnemyNpc("Enemy", areaId: area, position: new Vector2D(100, 100), width: 32, height: 48, sprite: "resources/characters/player-blue.png", speed: 30);
+
+                    Random random = new Random();
+                    if(subtype == "fast_enemy"){
+                         return new EnemyNpc("fast_enemy", areaId: area, position: new Vector2D(random.Next(50, 750), random.Next(50, 450)), width: 32, height: 48, sprite: "resources/characters/player-green.png", speed: 60);
+                    }
+
+                    if(subtype == "slow_enemy"){
+                         return new EnemyNpc("slow_enemy", areaId: area, position: new Vector2D(random.Next(50, 750), random.Next(50, 450)), width: 32, height: 48, sprite: "resources/characters/player-brown.png", speed: 15);
+                    }
+
+                    return new EnemyNpc("normal_enemy", areaId: area, position: new Vector2D(random.Next(50, 750), random.Next(50, 450)), width: 32, height: 48, sprite: "resources/characters/player-blue.png", speed: 30);
+                   
                 default:
                     return null;
             }

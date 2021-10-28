@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetworkRequest = exports.ProccessServerRequests = void 0;
-//import index =  require("../index")
 var ClientEngine_1 = require("./ClientEngine");
 function ProccessServerRequests(requests) {
     for (var _i = 0, requests_1 = requests; _i < requests_1.length; _i++) {

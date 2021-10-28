@@ -23,15 +23,6 @@ namespace SignalRWebPack.Characters
             bool moving = false) : base(name, health, sprite, position, width, height, frameX, frameY, areaId, speed, moving){}
         
         public abstract void Shout();
-        public virtual void SetAttackAlgorithm(AttackAlgorithm attackAlgorithm)
-        {
-            AttackAlgorithm = attackAlgorithm;
-        }
-        public virtual void SetMoveAlgorithm(MoveAlgorithm moveAlgorithm)
-        {
-            MoveAlgorithm = moveAlgorithm;
-        }
-
         public string getName() {
             return this.name;
         }

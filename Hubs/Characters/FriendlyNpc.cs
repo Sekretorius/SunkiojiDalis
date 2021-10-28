@@ -25,15 +25,14 @@ namespace SignalRWebPack.Characters
 
         public override void Update()
         {
-            //MoveAlgorithm.Move(ref x, ref y, speed);
-            //SyncDataWithClients("SyncPosition", $"{{\"x\":\"{x}\", \"y\":\"{y}\"}}");
+            if(this.moveAlgorithm != null)
+            {
+                this.moveAlgorithm.Move(this.Position, null, speed);
+                SyncDataWithClients("SyncPosition", $"{{\"x\":\"{this.Position.X}\", \"y\":\"{this.Position.Y}\"}}");
+            }
         }
 
         public override void Shout(){}
-        public override void SetAttackAlgorithm(AttackAlgorithm attackAlgorithm){}
-        //public override void SetMoveAlgorithm(MoveAlgorithm moveAlgorithm){}
-        public override AttackAlgorithm GetAttackAlgorithm(){ return null; }
-        public override MoveAlgorithm GetMoveAlgorithm(){ return null; }
         public override void Move(){}
         public override void Attack(){}
         public override void Die(){}

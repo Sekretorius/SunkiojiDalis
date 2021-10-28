@@ -1,5 +1,6 @@
 
 //import index =  require("../index")
+import { Console } from "console";
 import { ClientObjects, ClientEngineMethods } from "./ClientEngine"
 
 export function ProccessServerRequests(requests: any){

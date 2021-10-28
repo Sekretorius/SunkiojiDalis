@@ -196,6 +196,12 @@ namespace SignalRWebPack.Engine
                             {
                                 collisionManager.UnRegisterCollider(updatingObject.Collider);
                             }
+                            
+                            if(updatingObject is NetworkObject)
+                            {
+                                networkManager.RemoveNetworkObject((NetworkObject)updatingObject);
+                            }
+
                             updatingObject.Destroy();
                         }
                         else

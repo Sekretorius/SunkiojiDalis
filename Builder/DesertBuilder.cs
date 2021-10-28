@@ -27,8 +27,21 @@ namespace SignalRWebPack {
         {
             var npcCreator = new NpcCreator();
             var enemy = npcCreator.FactoryMethod(NpcType.Enemy, "lion", $"{x},{y}");
-            enemy.SetMoveAlgorithm(new Walk());
+
+            var randomEnemy_1 = npcCreator.FactoryMethod(NpcType.Enemy, "slow_enemy", $"{x},{y}");
+            var randomEnemy_2 = npcCreator.FactoryMethod(NpcType.Enemy, "slow_enemy", $"{x},{y}");
+
+            enemy.SetMoveAlgorithm(new Stand());
+
+            randomEnemy_1.SetMoveAlgorithm(new Walk());
+            randomEnemy_2.SetMoveAlgorithm(new Walk());
+
+            randomEnemy_1.SetAttackAlgorithm(new Melee(randomEnemy_1.AreaId, 5f, 10f));
+            randomEnemy_2.SetAttackAlgorithm(new Melee(randomEnemy_2.AreaId, 10f, 10f));
+
             this.desert.AddNPC(enemy);
+            this.desert.AddNPC(randomEnemy_1);
+            this.desert.AddNPC(randomEnemy_2);
         }
         
         public void AddItems()

@@ -12,6 +12,7 @@ import { CommonFood } from '../Items/Consumables/Foods/FoodRarities/CommonFood';
 import { LegendaryFood } from '../Items/Consumables/Foods/FoodRarities/LegendaryFood';
 import { CommonPotion } from '../Items/Consumables/Potions/PotionRarities/CommonPotion';
 import { LegendaryPotion } from '../Items/Consumables/Potions/PotionRarities/LegendaryPotion';
+import { Projectile } from '../Characters/Projectile';
 
 export var ClientObjects: any = {}; //objects that have been created
 export var ClientObjectCount: number = 0;
@@ -25,6 +26,7 @@ function CreateClientObject(serverRequest: NetworkRequest) {
 }
 
 function CreateNewObject(guid: string, objectData: any) {
+    console.log("CREATE " + objectData);
     if(ClientObjects[guid] === undefined){
         let newObject;
         switch(objectData.objectType)
@@ -65,6 +67,9 @@ function CreateNewObject(guid: string, objectData: any) {
             case "LegendaryFood":
                 newObject = new LegendaryFood(guid, objectData);
                 break;
+            case "Projectile":
+                newObject = new Projectile(guid, objectData);
+                break;
         }
         if(newObject !== null)
         {
@@ -77,6 +82,13 @@ function CreateNewObject(guid: string, objectData: any) {
 function RemoveAllObjects(guid: string, objectData: any) {
     ClientObjects = {};
     ClientObjectCount = 0;
+}
+
+export function DestroyObject(guid: string){
+    if(ClientObjectCount > 0){
+        delete ClientObjects[guid]; 
+        ClientObjectCount -= 1;
+    }
 }
 
 export function Interpolate(currentPosition: Vector2D, targetPosition: Vector2D, speed: number, elapsedTime: number): Vector2D {
