@@ -30,6 +30,10 @@ const controls = {
     undo: false,
 };
 
+const notification = {
+    text: ""
+}
+
 function resetControls() {
     controls.up = false;
     controls.left = false;
@@ -110,6 +114,11 @@ window.onload = function () {
 
     connection.on("RecieveItemInfo", function (newItems) {
         items = JSON.parse(newItems);
+    });
+
+    connection.on("RecieveNotification", function (message) {
+        notification.text = JSON.parse(message);
+        console.log(notification.text);
     });
 
     connection.on("RecieveId", function (id) {
