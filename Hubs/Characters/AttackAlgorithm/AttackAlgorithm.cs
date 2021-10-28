@@ -23,7 +23,5 @@ namespace SignalRWebPack.Characters
         }
 
         public abstract void Attack(float x, float y); //should have more parametres (like maybe sprite or something)
-        public abstract AttackAlgorithm DeepCopy();
-        public abstract AttackAlgorithm ShallowCopy();
     }
 }

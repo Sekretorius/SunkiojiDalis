@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using SignalRWebPack.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using SignalRWebPack.Engine;
+using SignalRWebPack.Network;
 
 namespace SignalRWebPack
 {
@@ -22,6 +23,8 @@ namespace SignalRWebPack
             IHubContext = (IHubContext<ChatHub>)host.Services.GetService(typeof(IHubContext<ChatHub>));
             ServerEngine.Instance.Initialize();
             host.Run();
+            TestingManager mang = new TestingManager();
+            mang.Testing();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

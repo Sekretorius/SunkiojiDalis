@@ -87,8 +87,7 @@ namespace SignalRWebPack.Characters
         
             var charas = (Character)this.MemberwiseClone();
             charas.Position = new Vector2D(this.Position.X, this.Position.Y);
-            charas.MoveAlgorithm = this.MoveAlgorithm.DeepCopy();
-            charas.AttackAlgorithm = this.AttackAlgorithm.DeepCopy(); // reikia pakeist į kitą reference
+            charas.MoveAlgorithm = this.MoveAlgorithm.DeepCopy();// reikia pakeist į kitą reference
 
             return charas;
         } 

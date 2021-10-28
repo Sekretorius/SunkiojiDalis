@@ -12,6 +12,7 @@ using SignalRWebPack;
 using SignalRWebPack.Characters;
 using SignalRWebPack.Managers;
 using SignalRWebPack.Hubs.Worlds;
+using SignalRWebPack.Facades;
 
 namespace SignalRWebPack.Engine
 {
@@ -84,46 +85,9 @@ namespace SignalRWebPack.Engine
             networkManager.SetHubContext(Program.IHubContext);
 
 
-            NpcCreator npcCreator = new NpcCreator();
-            NPC friendly = npcCreator.FactoryMethod(NpcType.Friendly, "", $"{3},{3}");
-            NPC enemy = npcCreator.FactoryMethod(NpcType.Enemy, "", $"{2},{3}");
-            friendly.SetMoveAlgorithm(new Stand());
-            enemy.SetMoveAlgorithm(new Walk());
-            // Add NPCs, items, obstacles to World.Instance...
-            World.Instance.AddNPC(friendly);
-            World.Instance.AddNPC(enemy);
-            var director = new Director();
-            var builder = new DesertBuilder(2, 3);
-            director.Builder = builder;
-            director.BuildArea();
-            var desert = builder.GetProduct();
-            World.Instance.SwapArea(desert);
-            // ČIA BUVO MERGE CONFLICT TAI GALI BŪTI,
-            // KAD NEIŠSISPRENDĖ TINKAMAI
-            SpearAttackDecorator s = new SpearAttackDecorator(friendly);
-            SwordAttackDecorator ss = new SwordAttackDecorator(s);
-            ss.Attack();
-
-
-
-            Console.WriteLine("Pgr prieš keitimus:" + enemy.name + ", " + enemy.areaId + ", " + enemy.Position.X+ ", " +enemy.Position.Y+ ", " + enemy.MoveAlgorithm+ ", " + enemy.GetHashCode());
-
-            NPC nig = (NPC)enemy.ShallowCopy();
-            nig.name = "bebras";
-            nig.Position.X = 150;
-            nig.Position.Y = 101;
-            nig.MoveAlgorithm.ShallowCopy();
-            Console.WriteLine("Pgr po shallow keitimo:" + enemy.name + ", " + enemy.areaId + ", " + enemy.Position.X+ ", " +enemy.Position.Y + ", " + enemy.MoveAlgorithm+ ", " + enemy.GetHashCode());
-            Console.WriteLine("Shallow kopijavimas:" + nig.name + ", " + nig.areaId + ", " + nig.Position.X+ ", " +nig.Position.Y+ ", " + nig.MoveAlgorithm+ ", " + nig.GetHashCode());
-
-
-            NPC asd = (NPC)enemy.DeepCopy();
-            asd.name = "arabas";
-            asd.Position.X = 200;
-            asd.Position.Y = 300;
-            asd.MoveAlgorithm.DeepCopy();
-            Console.WriteLine("Pgr po shallow keitimo, po to po deep keitimo:" +enemy.name + ", " + enemy.areaId + ", " + enemy.Position.X+ ", " +enemy.Position.Y+ ", " + enemy.MoveAlgorithm+ ", " + enemy.GetHashCode());
-            Console.WriteLine("Deep kopijavimas:" + asd.name + ", " + asd.areaId + ", " + asd.Position.X+ ", " +asd.Position.Y+ ", " + asd.MoveAlgorithm+ ", " + asd.GetHashCode());
+            Facade servas = new Facade();
+            servas.Factory();
+            servas.Builder();
         }
 
         //creates instance only on server
