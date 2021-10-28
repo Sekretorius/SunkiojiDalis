@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CalculateTravelTime = exports.Interpolate = exports.ClientEngineMethods = exports.ClientObjectCount = exports.ClientObjects = void 0;
+exports.CalculateTravelTime = exports.Interpolate = exports.DestroyObject = exports.ClientEngineMethods = exports.ClientObjectCount = exports.ClientObjects = void 0;
 var EnemyNpc_1 = require("../Characters/EnemyNpc");
 var FriendlyNpc_1 = require("../Characters/FriendlyNpc");
 var Vector2D_1 = require("../Helpers/Vector2D");
@@ -14,6 +14,7 @@ var CommonFood_1 = require("../Items/Consumables/Foods/FoodRarities/CommonFood")
 var LegendaryFood_1 = require("../Items/Consumables/Foods/FoodRarities/LegendaryFood");
 var CommonPotion_1 = require("../Items/Consumables/Potions/PotionRarities/CommonPotion");
 var LegendaryPotion_1 = require("../Items/Consumables/Potions/PotionRarities/LegendaryPotion");
+var Projectile_1 = require("../Characters/Projectile");
 exports.ClientObjects = {}; //objects that have been created
 exports.ClientObjectCount = 0;
 exports.ClientEngineMethods = {};
@@ -23,6 +24,7 @@ function CreateClientObject(serverRequest) {
     CreateNewObject(serverRequest.RequestObjectGuid, serverRequest.RequestData);
 }
 function CreateNewObject(guid, objectData) {
+    console.log("CREATE " + objectData);
     if (exports.ClientObjects[guid] === undefined) {
         var newObject = void 0;
         switch (objectData.objectType) {
@@ -62,6 +64,9 @@ function CreateNewObject(guid, objectData) {
             case "LegendaryFood":
                 newObject = new LegendaryFood_1.LegendaryFood(guid, objectData);
                 break;
+            case "Projectile":
+                newObject = new Projectile_1.Projectile(guid, objectData);
+                break;
         }
         if (newObject !== null) {
             exports.ClientObjects[guid] = newObject;
@@ -73,6 +78,13 @@ function RemoveAllObjects(guid, objectData) {
     exports.ClientObjects = {};
     exports.ClientObjectCount = 0;
 }
+function DestroyObject(guid) {
+    if (exports.ClientObjectCount > 0) {
+        delete exports.ClientObjects[guid];
+        exports.ClientObjectCount -= 1;
+    }
+}
+exports.DestroyObject = DestroyObject;
 function Interpolate(currentPosition, targetPosition, speed, elapsedTime) {
     if (Vector2D_1.Vector2D.Equals(currentPosition, targetPosition) || speed === 0 || elapsedTime === 0) {
         return currentPosition;
