@@ -9,9 +9,9 @@ using SignalRWebPack.Hubs;
 
 namespace SignalRWebPack.Characters
 {
-    public class EnemyNpc : NPC
+    public class AnimalNpc : NPC
     {
-        public EnemyNpc(
+        public AnimalNpc(
             string name = null, 
             float health = 0, 
             string sprite = null, 
@@ -39,9 +39,6 @@ namespace SignalRWebPack.Characters
             };
         }
         int c = 0;
-
-        float attackDelay = 0;
-        float attackDelayTimmer = 0;
         public override void Update()
         {
             if(this.moveAlgorithm == null) return;
@@ -54,20 +51,7 @@ namespace SignalRWebPack.Characters
             }
             this.Position = this.moveAlgorithm.Move(this.Position, targets[c], speed);
             SyncDataWithGroup(AreaId, "SyncPosition", $"{{\"x\":\"{this.Position.X}\", \"y\":\"{this.Position.Y}\"}}");
-
-            TryAttack();
         }
-
-        private void TryAttack()
-        {
-            if(this.attackAlgorithm != null && attackDelayTimmer >= attackDelay)
-            {
-                attackDelay = this.attackAlgorithm.Attack(this.Position, new Vector2D(1, 0));
-                attackDelayTimmer = 0;
-            }
-            attackDelayTimmer += ServerEngine.Instance.UpdateTime;
-        }
-
         public override void Shout(){}
         public override void Move(){}
         public override void Attack(){}

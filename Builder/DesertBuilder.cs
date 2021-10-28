@@ -26,7 +26,7 @@ namespace SignalRWebPack {
         public void AddNPCs()
         {
             var npcCreator = new NpcCreator();
-            var enemy = npcCreator.FactoryMethod(NpcType.Enemy, "lion", $"{x},{y}");
+            var enemy = npcCreator.FactoryMethod(NpcType.Animal, null, $"{x},{y}");
 
             var randomEnemy_1 = npcCreator.FactoryMethod(NpcType.Enemy, "slow_enemy", $"{x},{y}");
             var randomEnemy_2 = npcCreator.FactoryMethod(NpcType.Enemy, "slow_enemy", $"{x},{y}");

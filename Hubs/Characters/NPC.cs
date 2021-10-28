@@ -31,6 +31,7 @@ namespace SignalRWebPack.Characters
     public enum NpcType
     {
         Friendly,
-        Enemy
+        Enemy,
+        Animal
     }
 }
