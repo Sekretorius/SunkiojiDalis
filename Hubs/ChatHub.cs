@@ -11,17 +11,19 @@ using SignalRWebPack.Network;
 namespace SignalRWebPack.Hubs
 {
     [JsonObject(MemberSerialization.Fields)]
-    public class Player
+    public class Player : IObserver
     {
+        public PlayerControl control;
+
         private int id;
         public int x;
         public int y;
         private int width;
         private int height;
-        private int frameX;
-        private int frameY;
-        private int speed;
-        private bool moving;
+        public int frameX;
+        public int frameY;
+        public int speed;
+        public bool moving;
         private string sprite;
         public int worldX;
         public int worldY;
@@ -43,7 +45,13 @@ namespace SignalRWebPack.Hubs
             this.worldX = worldX;
             this.worldY = worldY;
             this.background = background;
+            control = new PlayerControl(this);
             //to do: sync other actions 
+        }
+
+        public void Init()
+        {
+            control = new PlayerControl(this);
         }
 
         public void setId(int id) {
@@ -65,6 +73,16 @@ namespace SignalRWebPack.Hubs
         public string GetGroupId()
         {
             return $"{worldX},{worldY}";
+        }
+
+        public void Update(string message)
+        {
+            proxy.SendAsync("RecieveNotification", JsonConvert.SerializeObject(message));
+        }
+
+        public void Notify()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -148,7 +166,7 @@ namespace SignalRWebPack.Hubs
 
     public class ChatHub : Hub
     {
-        private static readonly object PlayerProccessLock = new object();
+        public static readonly object PlayerProccessLock = new object();
         public async Task JoinGame(string player)
         {   
             Random rd = new Random();
@@ -156,10 +174,12 @@ namespace SignalRWebPack.Hubs
             var convertedPlayer = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(player);
             convertedPlayer.setId(rand_num);
             convertedPlayer.proxy = Clients.Caller;
+            convertedPlayer.Init();
             lock(PlayerProccessLock)
             {
                 PlayersList.players[rand_num] = convertedPlayer;
                 World.Instance.AddPlayer(PlayersList.players[rand_num]);
+
             }
             await Clients.Caller.SendAsync("RecieveId", Newtonsoft.Json.JsonConvert.SerializeObject(convertedPlayer.getId()));
             await Groups.AddToGroupAsync(Context.ConnectionId,convertedPlayer.GetGroupId());
@@ -172,13 +192,13 @@ namespace SignalRWebPack.Hubs
             var currentX = PlayersList.players[convertedPlayer.getId()].worldX + worldX;
             var currentY = PlayersList.players[convertedPlayer.getId()].worldY + worldY;
             convertedPlayer.background = World.Instance.GetBackground(currentX, currentY);
-            World.Instance.MoveToArea(convertedPlayer, worldX, worldY, x, y);
-            
 
             // Leaving the group
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, PlayersList.players[convertedPlayer.getId()].GetGroupId());
             await Clients.Group(PlayersList.players[convertedPlayer.getId()].GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
 
+            World.Instance.MoveToArea(convertedPlayer, worldX, worldY, x, y);
+            
             // Entering new group
             lock(PlayerProccessLock)
             {
@@ -235,6 +255,79 @@ namespace SignalRWebPack.Hubs
             //await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutNPCs", JsonConvert.SerializeObject(World.Instance.GetNPCs(convertedPlayer.worldX, convertedPlayer.worldY)));
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
         }
+
+        public async Task UpdatePlayerMovement(string controls)
+        {
+            var playerControls = JsonConvert.DeserializeObject<Controls>(controls);
+            Player player;
+            lock (PlayerProccessLock)
+            {
+                player = PlayersList.players[playerControls.id];
+            }
+
+
+            if (playerControls.undo)
+            {
+                player.control.Undo();
+            }
+            else
+            {
+                if (playerControls.up)
+                {
+                    player.control.MoveUp();
+                }
+                if (playerControls.left)
+                {
+                    player.control.MoveLeft();
+                }
+                if (playerControls.down)
+                {
+                    player.control.MoveDown();
+                }
+                if (playerControls.right)
+                {
+                    player.control.MoveRight();
+                }
+            }
+
+            if (player.x <= World.transitionOffset)
+            {
+                if (player.worldX > 0)
+                {
+                    await MovePlayer(player, -1, 0, 700, player.y);
+                }
+            }
+            else if (player.x >= World.canvasWidth - World.transitionOffset)
+            {
+                if (player.worldX < World.width - 1)
+                {
+                    await MovePlayer(player, 1, 0, 100, player.y);
+                }
+            }
+            else if (player.y <= World.transitionOffset)
+            {
+                if (player.worldY > 0)
+                {
+                    await MovePlayer(player, 0, -1, player.x, 400);
+                }
+            }
+            else if (player.y >= World.canvasHeight - World.transitionOffset)
+            {
+                if (player.worldY < World.height - 1)
+                {
+                    await MovePlayer(player, 0, 1, player.x, 100);
+                }
+            }
+            lock (PlayerProccessLock)
+            {
+                World.Instance.UpdatePlayer(player);
+            }
+            // Receive NPCs, items, obstacles as well
+            //await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutNPCs", JsonConvert.SerializeObject(World.Instance.GetNPCs(convertedPlayer.worldX, convertedPlayer.worldY)));
+            await Clients.Group(player.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(player.worldX, player.worldY)));
+        }
+
+
 
         public async Task SendItemsListToPlayers() {
             await Clients.All.SendAsync("RecieveItemInfo", Newtonsoft.Json.JsonConvert.SerializeObject(ItemsList.items.Values.ToList()));

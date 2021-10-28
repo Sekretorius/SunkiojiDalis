@@ -23,17 +23,36 @@ namespace SignalRWebPack.Characters
             int speed = 0,
             bool moving = false) : base(name, health, sprite, areaId, position, width, height, frameX, frameY, speed, moving){}
 
+        private List<Vector2D> targets;
+        public override void Init()
+        {
+            base.Init();
+            Random random = new Random();
+
+            targets = new List<Vector2D>()
+            {
+                new Vector2D(random.Next(50, 750), random.Next(50, 450)),
+                new Vector2D(random.Next(50, 750), random.Next(50, 450)),
+                new Vector2D(random.Next(50, 750), random.Next(50, 450)),
+                new Vector2D(random.Next(50, 750), random.Next(50, 450))
+            };
+        }
+        int c = 0;
         public override void Update()
         {
-            //MoveAlgorithm.Move(ref x, ref y, speed);
-            //SyncDataWithClients("SyncPosition", $"{{\"x\":\"{x}\", \"y\":\"{y}\"}}");
+            if(this.moveAlgorithm == null) return;
+            if(targets[c] == Position)
+            {
+                c++;
+                if(c >= targets.Count){
+                    c = 0;   
+                }
+            }
+            this.Position = this.moveAlgorithm.Move(this.Position, targets[c], speed);
+            SyncDataWithGroup(AreaId, "SyncPosition", $"{{\"x\":\"{this.Position.X}\", \"y\":\"{this.Position.Y}\"}}");
         }
 
         public override void Shout(){}
-        public override void SetAttackAlgorithm(AttackAlgorithm attackAlgorithm){}
-        //public override void SetMoveAlgorithm(MoveAlgorithm moveAlgorithm){}
-        public override AttackAlgorithm GetAttackAlgorithm(){ return null; }
-        public override MoveAlgorithm GetMoveAlgorithm(){ return null; }
         public override void Move(){}
         public override void Attack(){}
         public override void Die(){}

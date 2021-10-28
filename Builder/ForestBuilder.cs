@@ -26,9 +26,18 @@ namespace SignalRWebPack {
         public void AddNPCs()
         {
             var npcCreator = new NpcCreator();
-            var enemy1 = npcCreator.FactoryMethod(NpcType.Enemy, "", $"{x},{y}");
-            enemy1.SetMoveAlgorithm(new Walk());
-            this.forest.AddNPC(enemy1);
+            var randomEnemy_1 = npcCreator.FactoryMethod(NpcType.Enemy, "fast_enemy", $"{x},{y}");
+            var randomEnemy_2 = npcCreator.FactoryMethod(NpcType.Enemy, "normal_enemy", $"{x},{y}");
+
+            randomEnemy_1.SetMoveAlgorithm(new MixedMove(30));
+            randomEnemy_2.SetMoveAlgorithm(new Walk());
+
+            randomEnemy_1.SetAttackAlgorithm(new Mixed(randomEnemy_1.AreaId, 5f));
+            randomEnemy_2.SetAttackAlgorithm(new Ranged(randomEnemy_2.AreaId, 10f, 10f, 100f));
+
+            this.forest.AddNPC(randomEnemy_1);
+            this.forest.AddNPC(randomEnemy_2);
+
             var enemy2 = npcCreator.FactoryMethod(NpcType.Enemy, "", $"{x},{y}");
             enemy2.SetMoveAlgorithm(new Stand());
             this.forest.AddNPC(enemy2);

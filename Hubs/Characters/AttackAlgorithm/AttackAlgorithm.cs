@@ -22,8 +22,6 @@ namespace SignalRWebPack.Characters
             this.damage = damage;
         }
 
-        public abstract void Attack(float x, float y); //should have more parametres (like maybe sprite or something)
-        public abstract AttackAlgorithm DeepCopy();
-        public abstract AttackAlgorithm ShallowCopy();
+        public abstract float Attack(Vector2D attacker, Vector2D target); //should have more parametres (like maybe sprite or something)
     }
 }

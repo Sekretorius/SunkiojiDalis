@@ -2,16 +2,45 @@ import * as signalR from "@microsoft/signalr";
 import { ClientObjects, ClientObjectCount, Interpolate } from "./Managers/ClientEngine"
 import { Obstacle } from "./Obstacles/Obstacle"
 import { Item } from "./Items/Item"
+import { connect } from "net";
+import { KeyObject } from "crypto";
+import EventEmitter = require("events");
+import NetworkManager = require("./Managers/NetworkManager");
 
 (<HTMLInputElement> document.getElementById("canvas")).disabled = true;
 const canvas = <HTMLCanvasElement> document.getElementById('canvas');
 const context = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 500;
+let connectionID = "";
 
 const keys = [];
 let otherPlayers = [];
 let items = [];
+
+export const indexWindow = window;
+
+const controls = {
+    id: -1,
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+    moving: false,
+    undo: false,
+};
+
+const notification = {
+    text: ""
+}
+
+function resetControls() {
+    controls.up = false;
+    controls.left = false;
+    controls.down = false;
+    controls.right = false;
+    controls.undo = false;
+}
 
 const player = {
   id: -1,
@@ -30,7 +59,8 @@ const player = {
 };
 
 function joinGame() {
-  connection.invoke("JoinGame", JSON.stringify(player)).catch(function (err) {
+    console.log("join game");
+    connection.invoke("JoinGame", JSON.stringify(player)).catch(function (err) {
     return console.error(err.toString());
   });
 }
@@ -41,44 +71,72 @@ function getItems() {
   });
 }
 
-export var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").withAutomaticReconnect().build();
+export var connection;
 
-connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
-    otherPlayers = JSON.parse(newPlayersList);
-  //to do: check coordinates with current player - take server coordinates
-  for(const element of otherPlayers) {
-    if(element.id == player.id)
-    {
-      player.id = element.id;
-      player.x = element.x;
-      player.y = element.y;
-      player.worldX = element.worldX;
-      player.worldY = element.worldY;
-      player.background = element.background;
-      console.log(player.background)
-      break;
-    }
-  }
-});
+window.onload = function () {
 
-connection.on("RecieveItemInfo", function (newItems) {
-  items = JSON.parse(newItems);
-});
+    connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
-connection.on("RecieveId", function (id) {
-    player.id = id;
-    console.log(player.id);
-});
+    connection.start().then(function () {
 
-connection.start().then(function () {
-  joinGame();
-  
-  (<HTMLInputElement> document.getElementById("canvas")).disabled = false;
-  startAnimating(30);
-}).catch(function (err) {
-  //to do: add notification for user 
-  return console.error(err.toString());
-});
+        if (connectionID != "") {
+            return;
+        }
+        connectionID = connection.connectionId;
+
+        console.log(connection.state);
+
+        joinGame();
+        (<HTMLInputElement>document.getElementById("canvas")).disabled = false;
+        startAnimating(30);
+    }).catch(function (err) {
+        //to do: add notification for user 
+        return console.error(err.toString());
+    });
+
+	connection.on("RecieveInfoAboutOtherPlayers", function (newPlayersList) {
+		otherPlayers = JSON.parse(newPlayersList);
+	  //to do: check coordinates with current player - take server coordinates
+	  for(const element of otherPlayers) {
+		if(element.id == player.id)
+		{
+		  player.id = element.id;
+		  player.x = element.x;
+		  player.y = element.y;
+		  player.worldX = element.worldX;
+		  player.worldY = element.worldY;
+		  player.background = element.background;
+		  console.log(player.background)
+		  break;
+		}
+	  }
+	});
+
+    connection.on("RecieveItemInfo", function (newItems) {
+        items = JSON.parse(newItems);
+    });
+
+    connection.on("RecieveNotification", function (message) {
+        notification.text = JSON.parse(message);
+        console.log(notification.text);
+    });
+
+    connection.on("RecieveId", function (id) {
+        player.id = id;
+        controls.id = id;
+        console.log(player.id);
+    });
+
+    connection.on("ClientRequestHandler", function (requests) {
+        let requestValues = JSON.parse(requests);
+        if (requestValues.length > 0) {
+            NetworkManager.ProccessServerRequests(requestValues);
+        }
+    });
+
+}
+
+
 
 const background = new Image();
 background.src = player.background;
@@ -91,41 +149,35 @@ function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
 
 window.addEventListener("keydown", function(e) {
   keys[e.key] = true;
-  player.moving = true;
 });
 
 window.addEventListener("keyup", function(e) {
   delete keys[e.key];
-  player.moving = false;
 });
 
 function movePlayer() {
-  if(keys["ArrowUp"] && player.y > 0) {
-    player.y -= player.speed;
-    player.frameY = 3;
-    player.moving = true;
-  }
-  if(keys["ArrowLeft"] && player.x > 0) {
-    player.x -= player.speed;
-    player.frameY = 1;
-    player.moving = true;
-  }
-  if(keys["ArrowDown"] && player.y < canvas.height - player.height) {
-    player.y += player.speed;
-    player.frameY = 0;
-    player.moving = true;
-  }
-  if(keys["ArrowRight"] && player.x < canvas.width - player.width) {
-    player.x += player.speed;
-    player.frameY = 2;
-    player.moving = true;
-  }
+
+    if (keys["ArrowUp"]) {
+        controls.up = true;
+    }
+    if (keys["ArrowLeft"]) {
+        controls.left = true;
+    }
+    if (keys["ArrowDown"]) {
+        controls.down = true;
+    }
+    if (keys["ArrowRight"]) {
+        controls.right = true;
+    }
+    if (keys["z"]) {
+        controls.undo = true;
+    }
 }
 
-function handlePlayerFrame() {
-  if(player.frameX < 3 && player.moving) player.frameX++;
-  else player.frameX = 0;
-}
+//function handlePlayerFrame() {
+//  if(player.frameX < 3 && player.moving) player.frameX++;
+//  else player.frameX = 0;
+//}
 
 let fps, fpsInterval, startTime, now, then, elapsed;
 
@@ -140,6 +192,13 @@ function sendPlayerInfoToServer() {
   connection.invoke("UpdatePlayerInfo", JSON.stringify(player)).catch(function (err) {
     return console.error(err.toString());
   });
+}
+function sendPlayerControlsToServer() {
+    if (controls.up || controls.left || controls.down || controls.right || controls.undo)
+        connection.invoke("UpdatePlayerMovement", JSON.stringify(controls)).catch(function (err) {
+            return console.error(err.toString());
+        });
+    resetControls();
 }
 let timeThen = 0;
 function animate() {
@@ -208,12 +267,14 @@ function animate() {
     }
 
 
-    movePlayer();
-    handlePlayerFrame();
+
+    //handlePlayerFrame();
     
     //to do: send/update player info to server when it is needed
-    if (player.id !== -1){
-      sendPlayerInfoToServer();
+    if (player.id !== -1) {
+      movePlayer();
+      //sendPlayerInfoToServer();
+      sendPlayerControlsToServer();
       getItems();
     }
     requestAnimationFrame(animate);
