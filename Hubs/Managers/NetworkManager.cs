@@ -98,6 +98,11 @@ namespace SignalRWebPack.Network
             }
         }
 
+        public void RemoveNetworkObject(NetworkObject networkObject)
+        {
+            networkObjects.Remove(networkObject);
+        }
+
         public void AddNewObjectToAllClients(NetworkObject networkObject){
             if(networkObject == null) return;
             
@@ -276,7 +281,6 @@ namespace SignalRWebPack.Network
                 await player.proxy.SendAsync(ClientRequestHandlerMethod, serializedData);
             }
         }
-
         public override void Destroy() 
         { 
         
@@ -327,7 +331,10 @@ namespace SignalRWebPack.Network
 
         public virtual void Init() { }
         public virtual void Update() { }
-        public virtual void Destroy() { }
+        public virtual void Destroy() 
+        { 
+            SyncDataWithGroup(AreaId, "Destroy", null);
+        }
         public virtual void OnCollision(Collision collision) {}
         protected void SyncDataWithClients(string method, string dataJson)
         {

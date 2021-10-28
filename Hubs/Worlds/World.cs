@@ -5,7 +5,7 @@ using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack.Hubs.Worlds
 {
-    public class World
+    public class World : Subject
     {
         public const int width = 5;
         public const int height = 5;
@@ -29,8 +29,6 @@ namespace SignalRWebPack.Hubs.Worlds
         }
 
         private Area[,] world = new Area[width, height];
-
-        public Dictionary<int, Player> players = new Dictionary<int, Player>();
 
         public World()
         {
@@ -91,7 +89,9 @@ namespace SignalRWebPack.Hubs.Worlds
         public void AddPlayer(Player player)
         {
             world[player.worldX, player.worldY].AddPlayer(player);
-        
+
+            Attatch(player);
+            ReceiveFromClient($"Player {player.getId()} joined the game!");
         }
 
         public void RemovePlayer(Player player)
@@ -109,11 +109,15 @@ namespace SignalRWebPack.Hubs.Worlds
             RemovePlayer(player);
             player.MoveToArea(worldX, worldY, x, y);
             AddPlayer(player);
+
+            ReceiveFromClient($"Player {player.getId()} entered {player.GetGroupId()}!");
         }
 
         public static int[] ParseStringToIntArray(string arr)
         {
             return arr.Split(',').Select(int.Parse).ToArray();
         }
+
+
     } 
 }
