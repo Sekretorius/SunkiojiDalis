@@ -27,6 +27,12 @@ namespace SignalRWebPack.Facades
             director.BuildArea();
             var desert = builder.GetProduct();
             World.Instance.SwapArea(desert);
+
+            var forestBuilder = new ForestBuilder(4, 3);
+            director.Builder = forestBuilder;
+            director.BuildArea();
+            var forest = forestBuilder.GetProduct();
+            World.Instance.SwapArea(forest);
         }
         public void Factory(){
             NpcCreator npcCreator = new NpcCreator();
