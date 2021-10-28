@@ -85,9 +85,8 @@ namespace SignalRWebPack.Hubs.Worlds
         public void AddPlayer(Player player)
         {
             world[player.worldX, player.worldY].AddPlayer(player);
-
             Attatch(player);
-            ReceiveFromClient($"Player {player.getId()} joined the game!");
+            player.Notify($"Player {player.getId()} joined the game!");
         }
 
         public void RemovePlayer(Player player)
@@ -105,8 +104,7 @@ namespace SignalRWebPack.Hubs.Worlds
             RemovePlayer(player);
             player.MoveToArea(worldX, worldY, x, y);
             AddPlayer(player);
-
-            ReceiveFromClient($"Player {player.getId()} entered {player.GetGroupId()}!");
+            player.Notify($"Player {player.getId()} entered {player.GetGroupId()}!");
         }
 
         public static int[] ParseStringToIntArray(string arr)

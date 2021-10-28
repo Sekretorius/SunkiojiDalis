@@ -80,9 +80,9 @@ namespace SignalRWebPack.Hubs
             proxy.SendAsync("RecieveNotification", JsonConvert.SerializeObject(message));
         }
 
-        public void Notify()
+        public void Notify(string message)
         {
-            throw new NotImplementedException();
+            World.Instance.ReceiveFromClient(message);
         }
     }
 

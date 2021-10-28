@@ -3,6 +3,6 @@ namespace SignalRWebPack
     public interface IObserver
     {
         void Update(string message);
-        void Notify();
+        void Notify(string message);
     }
 }
