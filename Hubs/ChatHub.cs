@@ -179,8 +179,6 @@ namespace SignalRWebPack.Hubs
             {
                 PlayersList.players[rand_num] = convertedPlayer;
                 World.Instance.AddPlayer(PlayersList.players[rand_num]);
-                World.Instance.Attatch(convertedPlayer);
-                World.Instance.ReceiveFromClient($"Player {convertedPlayer.getId()} joined the game!");
             }
             await Clients.Caller.SendAsync("RecieveId", Newtonsoft.Json.JsonConvert.SerializeObject(convertedPlayer.getId()));
             await Groups.AddToGroupAsync(Context.ConnectionId,convertedPlayer.GetGroupId());
@@ -208,8 +206,6 @@ namespace SignalRWebPack.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, convertedPlayer.GetGroupId());
             await ServerEngine.NetworkManager.OnAreaChange(convertedPlayer);
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
-
-            World.Instance.ReceiveFromClient($"Player {convertedPlayer.getId()} entered {convertedPlayer.GetGroupId()}!");
         }
 
         public async Task UpdatePlayerInfo(string player)
