@@ -90,6 +90,10 @@ namespace SignalRWebPack.Facades
 
         public void TestAdapter()
         {
+            
+            Console.WriteLine("-------------Adapter test--------------");
+            Console.WriteLine("Adapter test1: ");
+
             ISaveFileAdapter xmlAdapter = new XMLAdapter(new XMLWritter());
             ISaveFileAdapter txtAdapter = new TXTAdapter(new TXTWritter());
 
@@ -115,6 +119,7 @@ namespace SignalRWebPack.Facades
             {
                 Console.WriteLine("TXT DATA: " + p2);
             }
+
         }
     }
 }
