@@ -166,7 +166,7 @@ namespace SignalRWebPack.Hubs
 
     public class ChatHub : Hub
     {
-        private static readonly object PlayerProccessLock = new object();
+        public static readonly object PlayerProccessLock = new object();
         public async Task JoinGame(string player)
         {   
             Random rd = new Random();
@@ -185,30 +185,6 @@ namespace SignalRWebPack.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId,convertedPlayer.GetGroupId());
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY) ));
             await ServerEngine.NetworkManager.OnNewClientConnected(Clients.Caller);
-
-
-            lock(PlayerProccessLock)
-            {
-                ISaveFileAdapter xmlAdapter = new XMLAdapter(new XMLWritter());
-                ISaveFileAdapter txtAdapter = new TXTAdapter(new TXTWritter());
-                List<Player> players = new List<Player>(PlayersList.players.Values);
-
-                txtAdapter.Save(players);
-                xmlAdapter.Save(players);
-
-                List<string> data1 = xmlAdapter.Read();
-                List<string> data2 = txtAdapter.Read();
-
-                foreach(string p1 in data1)
-                {
-                    Console.WriteLine("XML DATA: " + p1);
-                }
-
-                foreach(string p2 in data2)
-                {
-                    Console.WriteLine("TXT DATA: " + p2);
-                }
-            }
         }
 
         public async Task MovePlayer(Player convertedPlayer, int worldX, int worldY, int x, int y)

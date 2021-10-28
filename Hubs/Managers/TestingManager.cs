@@ -14,6 +14,7 @@ namespace SignalRWebPack.Network
             tests.TestStrategy();
             tests.TestPrototype();
             tests.TestDecorator();
+            tests.TestAdapter();
             Console.WriteLine("----------------------");
         }      
     }

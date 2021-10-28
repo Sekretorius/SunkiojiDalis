@@ -81,5 +81,34 @@ namespace SignalRWebPack.Facades
             Console.WriteLine("Decorated test1: ");
             ss.Attack();
         }
+
+        public void TestAdapter()
+        {
+            ISaveFileAdapter xmlAdapter = new XMLAdapter(new XMLWritter());
+            ISaveFileAdapter txtAdapter = new TXTAdapter(new TXTWritter());
+
+            List<Player> players = new List<Player>()
+            {
+                new Player(0, 0, 0, 0, 0, 0, 0, 0, false, null, 0, 0, null),
+                new Player(1, 1, 1, 1, 1, 1, 1, 1, true, "test", 1, 1, "test"),
+                new Player(2, 2, 2, 2, 2, 2, 2, 2, true, "test", 1, 1, "test"),
+            };
+
+            txtAdapter.Save(players);
+            xmlAdapter.Save(players);
+
+            List<string> data1 = xmlAdapter.Read();
+            List<string> data2 = txtAdapter.Read();
+
+            foreach(string p1 in data1)
+            {
+                Console.WriteLine("XML DATA: " + p1);
+            }
+
+            foreach(string p2 in data2)
+            {
+                Console.WriteLine("TXT DATA: " + p2);
+            }
+        }
     }
 }
