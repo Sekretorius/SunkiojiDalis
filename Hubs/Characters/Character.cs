@@ -70,6 +70,7 @@ namespace SignalRWebPack.Characters
         }
         public abstract void Move();
         public abstract void Attack();
+        public abstract void Equip();
         public abstract void Die();
 
         public override Dictionary<string, string> OnClientSideCreation()

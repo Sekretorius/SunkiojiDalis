@@ -38,6 +38,13 @@ namespace SignalRWebPack
             commands.Add(command);
         }
 
+        public void ChangeBehaviour()
+        {
+            ICommand command = new ChangeBehaviourCommand(player);
+            command.Execute();
+            commands.Add(command);
+        }
+
         public void Undo()
         {
             if (commands.Count > 0)

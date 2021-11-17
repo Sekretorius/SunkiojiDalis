@@ -11,6 +11,7 @@ namespace SignalRWebPack
         public bool left;
         public bool down;
         public bool right;
+        public bool change;
 
         public bool undo;
     }
