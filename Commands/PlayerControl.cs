@@ -7,10 +7,13 @@ namespace SignalRWebPack
     {
         private List<ICommand> commands;
 
+        private List<ICommand> msgCommands;
+
         private Player player;
         public PlayerControl(Player player)
         {
             commands = new List<ICommand>();
+            msgCommands = new List<ICommand>();
             this.player = player;
         }
         public void MoveLeft()
@@ -38,6 +41,13 @@ namespace SignalRWebPack
             commands.Add(command);
         }
 
+        public void SendMessage(Message msg)
+        {
+            ICommand command = new MessageCommand(msg);
+            command.Execute();
+            msgCommands.Add(command);
+        }
+
         public void Undo()
         {
             if (commands.Count > 0)
@@ -45,6 +55,16 @@ namespace SignalRWebPack
                 ICommand command = commands[commands.Count-1];
                 command.Undo();
                 commands.Remove(command);
+            }
+        }
+
+        public void UndoMsg()
+        {
+            if (msgCommands.Count > 0)
+            {
+                ICommand command = msgCommands[msgCommands.Count - 1];
+                command.Undo();
+                msgCommands.Remove(command);
             }
         }
     }

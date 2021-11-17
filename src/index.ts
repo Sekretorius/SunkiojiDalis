@@ -28,7 +28,13 @@ const controls = {
     right: false,
     moving: false,
     undo: false,
+    undoMsg: false,
 };
+
+const chatMessage = {
+    id: "",
+    message: "",
+}
 
 const notification = {
     text: ""
@@ -60,6 +66,33 @@ const player = {
 
 function joinGame() {
     console.log("join game");
+
+    var ul = document.getElementById("discussion");
+    var li = document.createElement("li");
+    var st = document.createElement("strong");
+    st.appendChild(document.createTextNode("TEST"));
+    li.appendChild(st);
+    li.appendChild(document.createTextNode(" " + "Four"));
+    ul.appendChild(li);
+
+    var btn = document.getElementById("sendmessage").onclick = function () {
+        chatMessage.id = player.id.toString();
+        var el = document.getElementById("message");
+        chatMessage.message = (<HTMLInputElement>el).value;
+        connection.invoke("SendMessage", JSON.stringify(chatMessage)).catch(function (err) {
+            console.error(err.toString());
+        });
+        (<HTMLInputElement>el).value = null;
+    };
+
+    var btnUndo = document.getElementById("undomessage").onclick = function () {
+        controls.undoMsg = true;
+        connection.invoke("UpdatePlayerMovement", JSON.stringify(controls)).catch(function (err) {
+            return console.error(err.toString());
+        });
+        controls.undoMsg = false;
+    };
+
     connection.invoke("JoinGame", JSON.stringify(player)).catch(function (err) {
     return console.error(err.toString());
   });
@@ -131,6 +164,20 @@ window.onload = function () {
         let requestValues = JSON.parse(requests);
         if (requestValues.length > 0) {
             NetworkManager.ProccessServerRequests(requestValues);
+        }
+    });
+
+    connection.on("ReceiveMessages", function (messages) {
+        var messageList = JSON.parse(messages);
+        var ul = document.getElementById("discussion");
+        ul.innerHTML = "";
+        for (const message of messageList) {
+            var li = document.createElement("li");
+            var st = document.createElement("strong");
+            st.appendChild(document.createTextNode(message.id));
+            li.appendChild(st);
+            li.appendChild(document.createTextNode(" " + message.message));
+            ul.appendChild(li);
         }
     });
 

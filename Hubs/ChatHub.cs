@@ -10,6 +10,7 @@ using SignalRWebPack.Network;
 
 namespace SignalRWebPack.Hubs
 {
+
     [JsonObject(MemberSerialization.Fields)]
     public class Player : IObserver
     {
@@ -75,14 +76,15 @@ namespace SignalRWebPack.Hubs
             return $"{worldX},{worldY}";
         }
 
-        public void Update(string message)
+        public void Update()
         {
-            proxy.SendAsync("RecieveNotification", JsonConvert.SerializeObject(message));
+            proxy.SendAsync("ReceiveMessages", JsonConvert.SerializeObject(World.Instance.Messages.Skip(Math.Max(0, World.Instance.Messages.Count() - 7))));
         }
 
         public void Notify()
         {
-            throw new NotImplementedException();
+            World.Instance.Messages.Add(new Message($"{getId()} joined the game!", "SERVER"));
+            World.Instance.NotifyAll();
         }
     }
 
@@ -185,6 +187,8 @@ namespace SignalRWebPack.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId,convertedPlayer.GetGroupId());
             await Clients.Group(convertedPlayer.GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY) ));
             await ServerEngine.NetworkManager.OnNewClientConnected(Clients.Caller);
+
+            convertedPlayer.Notify();
         }
 
         public async Task MovePlayer(Player convertedPlayer, int worldX, int worldY, int x, int y)
@@ -270,6 +274,10 @@ namespace SignalRWebPack.Hubs
             {
                 player.control.Undo();
             }
+            else if (playerControls.undoMsg)
+            {
+                player.control.UndoMsg();
+            }
             else
             {
                 if (playerControls.up)
@@ -336,7 +344,7 @@ namespace SignalRWebPack.Hubs
         public async Task UpdateItemsList(string item) {
             var convertedItem = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(item);
             ItemsList.AddItemToList(convertedItem);
-            await Clients.All.SendAsync("RecieveItemInfo", Newtonsoft.Json.JsonConvert.SerializeObject(ItemsList.items.Values.ToList()));
+            await Clients.All.SendAsync("RecieveItemInfo", JsonConvert.SerializeObject(World.Instance.Messages.Skip(Math.Max(0, World.Instance.Messages.Count() - 7))));
         }
 
         public async Task HandleClientRequest(string data)
@@ -345,6 +353,13 @@ namespace SignalRWebPack.Hubs
         }
         //to do: handle player disconnect
         //to do: handle player reconnect
+
+        public void SendMessage(string message)
+        {
+            Message msg = JsonConvert.DeserializeObject<Message>(message);
+            var player = PlayersList.players[int.Parse(msg.id)];
+            player.control.SendMessage(msg);
+        }
 
     }
 }

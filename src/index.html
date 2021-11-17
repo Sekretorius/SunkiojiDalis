@@ -7,6 +7,7 @@
 <body>
     <style>
         #canvas {
+            margin-top:100px;
             width: 800px;
             height: 500px;
             outline: 1px solid #000;
@@ -16,7 +17,30 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        .container {
+            background-color: #e5e5e5;
+            border: thick solid #808080;
+            padding: 20px;
+            margin: 20px;
+            height: 150px;
+        }
+        #discussion {
+            list-style-type: none;
+            padding-inline-start:0px;
+        }
+        #undomessage {
+            float:right;
+        }
     </style>
     <canvas id="canvas"></canvas>
+
+    <div class="container">
+        <input type="text" id="message" />
+        <input type="button" id="sendmessage" value="Send" />
+        <input type="button" id="undomessage" value="Undo" />
+        <input type="hidden" id="displayname" />
+        <ul id="discussion">
+        </ul>
+    </div>
 </body>
 </html>

@@ -30,6 +30,8 @@ namespace SignalRWebPack.Hubs.Worlds
 
         private Area[,] world = new Area[width, height];
 
+        public List<Message> Messages;
+
         public World()
         {
             for (int i = 0; i < world.GetLength(0); i++)
@@ -37,6 +39,7 @@ namespace SignalRWebPack.Hubs.Worlds
                     world[i, t] = new Area(i, t);
                     world[i, t].background = "resources/backgrounds/grass_background.png";
                 }
+            Messages = new List<Message>();
         }
 
         public void SwapArea(Area area)
