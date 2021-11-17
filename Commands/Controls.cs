@@ -16,5 +16,7 @@ namespace SignalRWebPack
         public bool checkInv;
 
         public bool undo;
+
+        public bool undoMsg;
     }
 }

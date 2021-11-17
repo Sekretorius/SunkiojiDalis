@@ -18,7 +18,7 @@ namespace SignalRWebPack
         public void NotifyAll() 
         {
             foreach (var observer in observers)
-                observer.Update(msg);
+                observer.Update();
         }
         public virtual void ReceiveFromClient(string msg) 
         {

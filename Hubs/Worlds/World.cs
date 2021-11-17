@@ -15,20 +15,18 @@ namespace SignalRWebPack.Hubs.Worlds
 
         public const int transitionOffset = 50;
 
-        private static World instance;
+        private static readonly World instance = new World();
         public static World Instance
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new World();
-                }
                 return instance;
             }
         }
 
         private Area[,] world = new Area[width, height];
+
+        public List<Message> Messages;
 
         public World()
         {
@@ -37,6 +35,7 @@ namespace SignalRWebPack.Hubs.Worlds
                     world[i, t] = new Area(i, t);
                     world[i, t].background = "resources/backgrounds/grass_background.png";
                 }
+            Messages = new List<Message>();
         }
 
         public void SwapArea(Area area)
@@ -91,7 +90,6 @@ namespace SignalRWebPack.Hubs.Worlds
             world[player.worldX, player.worldY].AddPlayer(player);
 
             Attatch(player);
-            ReceiveFromClient($"Player {player.getId()} joined the game!");
         }
 
         public void RemovePlayer(Player player)
@@ -109,8 +107,6 @@ namespace SignalRWebPack.Hubs.Worlds
             RemovePlayer(player);
             player.MoveToArea(worldX, worldY, x, y);
             AddPlayer(player);
-
-            ReceiveFromClient($"Player {player.getId()} entered {player.GetGroupId()}!");
         }
 
         public static int[] ParseStringToIntArray(string arr)
