@@ -8,7 +8,9 @@ namespace SignalRWebPack.Characters
 {
     public class AxeAttackDecorator: Decorator
     {
+
         public AxeAttackDecorator(Character chars) : base(chars){}
+
         public override void Attack(){
             axeAttack();
 
@@ -17,6 +19,11 @@ namespace SignalRWebPack.Characters
 
         public void axeAttack(){
             Console.WriteLine("Kirvio attacka");
+        }
+
+        public override void Equip()
+        {
+
         }
     }
 }

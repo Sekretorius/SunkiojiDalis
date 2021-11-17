@@ -17,5 +17,8 @@ namespace SignalRWebPack.Characters
         public void swordAttack(){
             Console.WriteLine("Kardo attacka");
         }
+        public override void Equip()
+        {
+        }
     }
 }

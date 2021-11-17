@@ -15,7 +15,10 @@ namespace SignalRWebPack.Characters
         }
 
         public void magicAttack(){
-            Console.WriteLine("Magic attacka");
+            
+        }
+        public override void Equip()
+        {
         }
     }
 }

@@ -46,6 +46,18 @@ namespace SignalRWebPack.Facades
             World.Instance.AddNPC(enemy);
         }
 
+        public void Prototype(){
+            List<NPC> asd = World.Instance.GetNPCs(2, 3);
+            Character a = (Character)asd[2].ShallowCopy();
+            Console.WriteLine((Character)asd[2]);
+            a.SetMoveAlgorithm(new Stand());
+        }
+        public void UndoPrototype(){
+            List<NPC> asd = World.Instance.GetNPCs(2, 3);
+            Character a = (Character)asd[2].ShallowCopy();
+            a.SetMoveAlgorithm(new Walk());
+        }
+
         public void CreateTestUnits(){
             Console.WriteLine("---------------Factory--------------");
             test1 = new FriendlyNpc("Testavimas1", areaId: $"{2},{3}", position: new Vector2D(50, 50), width: 32, height: 48, sprite: "resources/characters/player-green.png", speed: 30);

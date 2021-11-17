@@ -17,5 +17,8 @@ namespace SignalRWebPack.Characters
         public void spearAttack(){
             Console.WriteLine("Ieties attacka");
         }
+        public override void Equip()
+        {
+        }
     }
 }
