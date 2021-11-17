@@ -86,7 +86,7 @@ namespace SignalRWebPack.Engine
 
 
             Facade servas = new Facade();
-            servas.Factory();
+            //servas.Factory();
             servas.Builder();
         }
 

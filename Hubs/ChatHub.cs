@@ -288,6 +288,10 @@ namespace SignalRWebPack.Hubs
                 {
                     player.control.MoveRight();
                 }
+                if (playerControls.change)
+                {
+                    player.control.ChangeBehaviour();
+                }
             }
 
             if (player.x <= World.transitionOffset)
