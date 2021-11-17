@@ -7,25 +7,27 @@ using System.Linq;
 using SignalRWebPack.Engine;
 using SignalRWebPack.Hubs.Worlds;
 using SignalRWebPack.Network;
+using SignalRWebPack.Characters;
+using SignalRWebPack.Facades;
 
 namespace SignalRWebPack.Hubs
 {
 
     [JsonObject(MemberSerialization.Fields)]
-    public class Player : IObserver
+    public class Player : Character, IObserver
     {
         public PlayerControl control;
-
+        public Facade own;
         private int id;
         public int x;
         public int y;
-        private int width;
-        private int height;
-        public int frameX;
-        public int frameY;
-        public int speed;
-        public bool moving;
-        private string sprite;
+        //private int width;
+        //private int height;
+        //public int frameX;
+        //public int frameY;
+        //public int speed;
+        //public bool moving;
+        //private string sprite;
         public int worldX;
         public int worldY;
         public string background;
@@ -47,10 +49,16 @@ namespace SignalRWebPack.Hubs
             this.worldY = worldY;
             this.background = background;
             control = new PlayerControl(this);
+            own = new Facade();
             //to do: sync other actions 
         }
 
-        public void Init()
+        public override void Move(){}
+        public override void Attack(){}
+        public override void Die(){}
+        public override void Equip(){}
+
+        public override void Init()
         {
             control = new PlayerControl(this);
         }
@@ -295,6 +303,14 @@ namespace SignalRWebPack.Hubs
                 if (playerControls.right)
                 {
                     player.control.MoveRight();
+                }
+                if (playerControls.change)
+                {
+                    player.control.Change();
+                }
+                if (playerControls.checkInv)
+                {
+                    player.control.CheckInv();
                 }
             }
 

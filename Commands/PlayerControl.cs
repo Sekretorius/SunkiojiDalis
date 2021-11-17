@@ -41,6 +41,17 @@ namespace SignalRWebPack
             commands.Add(command);
         }
 
+        public void Change()
+        {
+            ICommand command = new ChangeNPCCommand(player);
+            command.Execute();
+            commands.Add(command);
+        }
+
+        public void CheckInv(){
+            ICommand command = new ChekInvCommand(player);
+            command.Execute();
+            commands.Add(command);
         public void SendMessage(Message msg)
         {
             ICommand command = new MessageCommand(msg);

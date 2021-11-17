@@ -26,7 +26,9 @@ const controls = {
     down: false,
     left: false,
     right: false,
+    change: false,
     moving: false,
+    checkInv: false,
     undo: false,
     undoMsg: false,
 };
@@ -45,6 +47,8 @@ function resetControls() {
     controls.left = false;
     controls.down = false;
     controls.right = false;
+    controls.change = false;
+    controls.checkInv = false;
     controls.undo = false;
 }
 
@@ -216,6 +220,12 @@ function movePlayer() {
     if (keys["ArrowRight"]) {
         controls.right = true;
     }
+    if(keys["p"]) {
+      controls.change = true;
+    }
+    if(keys["i"]){
+      controls.checkInv = true;
+    }
     if (keys["z"]) {
         controls.undo = true;
     }
@@ -241,7 +251,7 @@ function sendPlayerInfoToServer() {
   });
 }
 function sendPlayerControlsToServer() {
-    if (controls.up || controls.left || controls.down || controls.right || controls.undo)
+    if (controls.up || controls.left || controls.down || controls.right || controls.change || controls.checkInv ||controls.undo)
         connection.invoke("UpdatePlayerMovement", JSON.stringify(controls)).catch(function (err) {
             return console.error(err.toString());
         });

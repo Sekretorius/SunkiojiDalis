@@ -17,6 +17,10 @@ namespace SignalRWebPack.Characters
                 character.Attack();
             }
         }
+
+        public override void Equip(){
+            character.Equip();
+        }
         public override void Move(){
             character.Move();
         }

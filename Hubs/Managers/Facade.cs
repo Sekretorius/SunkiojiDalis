@@ -15,7 +15,6 @@ namespace SignalRWebPack.Facades
     public class Facade
     {
         public Facade(){
-            Console.WriteLine("Facade started");
         }
         protected NPC test1;
         protected NPC test2;
@@ -44,6 +43,36 @@ namespace SignalRWebPack.Facades
             enemy.SetAttackAlgorithm(new Melee(enemy.AreaId, 10, 50));
             World.Instance.AddNPC(friendly);
             World.Instance.AddNPC(enemy);
+        }
+
+        public void Prototype(){
+            List<NPC> asd = World.Instance.GetNPCs(2, 3);
+            Console.WriteLine("Prototype real time");
+            Console.WriteLine("Before change:");
+            Console.WriteLine("name: " + asd[0].name + ", Position x: " + asd[0].Position.X + ", Position y: " + asd[0].Position.Y);
+            Character a = (Character)asd[0];
+            a.Position.X = 400;
+            a.Position.Y = 400;
+            Console.WriteLine("After change: ");
+            Console.WriteLine("name: " + a.name + ", Position x: " + a.Position.X + ", Position y: " + a.Position.Y);
+            World.Instance.UpdateNPC((NPC)a);
+            List<NPC> acc = World.Instance.GetNPCs(2, 3);
+            Console.WriteLine("Test if change worked: ");
+            Console.WriteLine("name: " +acc[0].name + ", Position x: " + acc[0].Position.X + ", Position y: " + acc[0].Position.Y);
+        }
+        public void UndoPrototype(){
+            //List<NPC> asd = World.Instance.GetNPCs(2, 3);
+            //Character a = (Character)asd[2].ShallowCopy();
+            //a.SetMoveAlgorithm(new Walk());
+        }
+
+        public void CheckInventory(Player ps){
+            Console.WriteLine("Mano inventorius: ");
+            SpearAttackDecorator s = new SpearAttackDecorator(ps);
+            HelmetDecorator s1 = new HelmetDecorator(s);
+            BodyArmorDecorator s2 = new BodyArmorDecorator(s1);
+            LegArmorDecorator s3 = new LegArmorDecorator(s2);
+            s3.Equip();     
         }
 
         public void CreateTestUnits(){
