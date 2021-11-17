@@ -38,9 +38,15 @@ namespace SignalRWebPack
             commands.Add(command);
         }
 
-        public void ChangeBehaviour()
+        public void Change()
         {
-            ICommand command = new ChangeBehaviourCommand(player);
+            ICommand command = new ChangeNPCCommand(player);
+            command.Execute();
+            commands.Add(command);
+        }
+
+        public void CheckInv(){
+            ICommand command = new ChekInvCommand(player);
             command.Execute();
             commands.Add(command);
         }

@@ -15,7 +15,6 @@ namespace SignalRWebPack.Facades
     public class Facade
     {
         public Facade(){
-            Console.WriteLine("Facade started");
         }
         protected NPC test1;
         protected NPC test2;
@@ -65,6 +64,15 @@ namespace SignalRWebPack.Facades
             //List<NPC> asd = World.Instance.GetNPCs(2, 3);
             //Character a = (Character)asd[2].ShallowCopy();
             //a.SetMoveAlgorithm(new Walk());
+        }
+
+        public void CheckInventory(Player ps){
+            Console.WriteLine("Mano inventorius: ");
+            SpearAttackDecorator s = new SpearAttackDecorator(ps);
+            HelmetDecorator s1 = new HelmetDecorator(s);
+            BodyArmorDecorator s2 = new BodyArmorDecorator(s1);
+            LegArmorDecorator s3 = new LegArmorDecorator(s2);
+            s3.Equip();     
         }
 
         public void CreateTestUnits(){
