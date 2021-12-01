@@ -5,12 +5,12 @@ using SignalRWebPack.Hubs;
 using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack {
-  public class DesertBuilder : IBuilder {
+  public class DesertBuilder : Builder {
         private int x;
         private int y;
         private DesertArea desert;
         
-        public DesertBuilder(int x, int y)
+        public DesertBuilder(int x, int y): base(x, y)
         {
             this.desert = new DesertArea(x, y);
             this.x = x;
@@ -18,12 +18,12 @@ namespace SignalRWebPack {
             this.Reset();
         }
         
-        public void Reset()
+        public override void Reset()
         {
             this.desert = new DesertArea(this.x, this.y);
         }
         
-        public void AddNPCs()
+        public override void AddNPCs()
         {
             var npcCreator = new NpcCreator();
             var enemy = npcCreator.FactoryMethod(NpcType.Animal, null, $"{x},{y}");
@@ -44,14 +44,14 @@ namespace SignalRWebPack {
             this.desert.AddNPC(randomEnemy_2);
         }
         
-        public void AddItems()
+        public override void AddItems()
         {
             var item = ItemsList.GenerateItem();
             item.AreaId = $"{x},{y}";
             this.desert.AddItem(item);
         }
         
-        public void AddObstacles()
+        public override void AddObstacles()
         {   
             var obstacleCreator = new ObstacleCreator();
             this.desert.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
@@ -61,7 +61,7 @@ namespace SignalRWebPack {
             this.desert.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Passable, "cactus", $"{x},{y}"));
         }
 
-        public DesertArea GetProduct()
+        public override Area GetProduct()
         {
             DesertArea result = this.desert;
             this.Reset();

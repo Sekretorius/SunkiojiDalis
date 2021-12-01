@@ -5,12 +5,12 @@ using SignalRWebPack.Hubs;
 using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack {
-  public class ForestBuilder : IBuilder {
+  public class ForestBuilder : Builder {
         private int x;
         private int y;
         private ForestArea forest;
         
-        public ForestBuilder(int x, int y)
+        public ForestBuilder(int x, int y): base(x, y)
         {
             this.forest = new ForestArea(x, y);
             this.x = x;
@@ -18,12 +18,12 @@ namespace SignalRWebPack {
             this.Reset();
         }
         
-        public void Reset()
+        public override void Reset()
         {
             this.forest = new ForestArea(this.x, this.y);
         }
         
-        public void AddNPCs()
+        public override void AddNPCs()
         {
             var npcCreator = new NpcCreator();
             var randomEnemy_1 = npcCreator.FactoryMethod(NpcType.Enemy, "fast_enemy", $"{x},{y}");
@@ -43,7 +43,7 @@ namespace SignalRWebPack {
             this.forest.AddNPC(enemy2);
         }
         
-        public void AddItems()
+        public override void AddItems()
         {
             var item1 = ItemsList.GenerateItem();
             item1.AreaId = $"{x},{y}";
@@ -63,7 +63,7 @@ namespace SignalRWebPack {
             this.forest.AddItem(item4);
         }
         
-        public void AddObstacles()
+        public override void AddObstacles()
         {   
             var obstacleCreator = new ObstacleCreator();
             for(int i = 0; i <= 20; i++) {
@@ -73,7 +73,7 @@ namespace SignalRWebPack {
             this.forest.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
         }
 
-        public ForestArea GetProduct()
+        public override Area GetProduct()
         {
             ForestArea result = this.forest;
             this.Reset();
