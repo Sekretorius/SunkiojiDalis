@@ -268,6 +268,7 @@ let timeThen = 0;
 function animate() {
   now = Date.now();
   elapsed = now - then;
+  
   if(elapsed > fpsInterval) {
     then = now - (elapsed % fpsInterval);
     context_2.clearRect(0, 0, layer2.width, layer2.height)

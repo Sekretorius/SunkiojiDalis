@@ -115,7 +115,15 @@ export function Interpolate(currentPosition: Vector2D, targetPosition: Vector2D,
         return currentPosition;
     }
     let direction = currentPosition.DirectionTo(targetPosition);
-    return Vector2D.Add(currentPosition, Vector2D.Multiply(direction.Normalize(), speed * elapsedTime));
+    let leftDistance = direction.GetMagnidute();
+    let moveDistance = speed * elapsedTime;    
+    
+    if(leftDistance < moveDistance)
+    {
+        moveDistance = leftDistance;
+    }
+
+    return Vector2D.Add(currentPosition, Vector2D.Multiply(direction.Normalize(), moveDistance));
 }
 
 export function CalculateTravelTime(oringV: Vector2D, targetV: Vector2D, speed: number): number {
