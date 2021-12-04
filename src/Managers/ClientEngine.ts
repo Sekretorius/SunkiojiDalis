@@ -31,46 +31,48 @@ function CreateClientObject(serverRequest: NetworkRequest) {
 function CreateNewObject(guid: string, objectData: any) {
     if(ClientObjects[guid] === undefined){
         let newObject;
+        let imageSharedData = GetImageFromData(objectData);
+
         switch(objectData.objectType)
         {
             case "FriendlyNpc":
-                newObject = new FriendlyNpc(guid, objectData, GetImageFromData(objectData));
+                newObject = new FriendlyNpc(guid, objectData, imageSharedData);
                 break;
             case "EnemyNpc":
-                newObject = new EnemyNpc(guid, objectData, GetImageFromData(objectData));
+                newObject = new EnemyNpc(guid, objectData, imageSharedData);
                 break;
             case "ImpassableObstacle":
-                newObject = new ImpassableObstacle(guid, objectData);
+                newObject = new ImpassableObstacle(guid, objectData, imageSharedData);
                 break;
             case "PassableObstacle":
-                newObject = new PassableObstacle(guid, objectData);
+                newObject = new PassableObstacle(guid, objectData, imageSharedData);
                 break;
             case "CommonArmor":
-                newObject = new CommonArmor(guid, objectData);
+                newObject = new CommonArmor(guid, objectData, imageSharedData);
                 break;
             case "LegendaryArmor":
-                newObject = new LegendaryArmor(guid, objectData);
+                newObject = new LegendaryArmor(guid, objectData, imageSharedData);
                 break;
             case "CommonWeapon":
-                newObject = new CommonWeapon(guid, objectData);
+                newObject = new CommonWeapon(guid, objectData, imageSharedData);
                 break;
             case "LegendaryWeapon":
-                newObject = new LegendaryWeapon(guid, objectData);
+                newObject = new LegendaryWeapon(guid, objectData, imageSharedData);
                 break;
             case "CommonPotion":
-                newObject = new CommonPotion(guid, objectData);
+                newObject = new CommonPotion(guid, objectData, imageSharedData);
                 break;
             case "LegendaryPotion":
-                newObject = new LegendaryPotion(guid, objectData);
+                newObject = new LegendaryPotion(guid, objectData, imageSharedData);
                 break;
             case "CommonFood":
-                newObject = new CommonFood(guid, objectData);
+                newObject = new CommonFood(guid, objectData, imageSharedData);
                 break;
             case "LegendaryFood":
-                newObject = new LegendaryFood(guid, objectData);
+                newObject = new LegendaryFood(guid, objectData, imageSharedData);
                 break;
             case "Projectile":
-                //newObject = new Projectile(guid, objectData);
+                newObject = new Projectile(guid, objectData, imageSharedData);
                 break;
         }
         if(newObject !== null)

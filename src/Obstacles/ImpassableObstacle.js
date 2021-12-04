@@ -19,8 +19,8 @@ exports.ImpassableObstacle = void 0;
 var Obstacle_1 = require("./Obstacle");
 var ImpassableObstacle = /** @class */ (function (_super) {
     __extends(ImpassableObstacle, _super);
-    function ImpassableObstacle(guid, characterData) {
-        var _this = _super.call(this, guid, characterData) || this;
+    function ImpassableObstacle(guid, characterData, imageSharedData) {
+        var _this = _super.call(this, guid, characterData, imageSharedData) || this;
         _this.Effect = characterData.effect;
         return _this;
     }

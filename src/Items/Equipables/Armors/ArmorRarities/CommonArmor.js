@@ -19,10 +19,8 @@ exports.CommonArmor = void 0;
 var AbstractArmor_1 = require("../AbstractArmor");
 var CommonArmor = /** @class */ (function (_super) {
     __extends(CommonArmor, _super);
-    function CommonArmor(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
-        _this.BelongsTo = -1;
-        return _this;
+    function CommonArmor(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     return CommonArmor;
 }(AbstractArmor_1.AbstractArmor));

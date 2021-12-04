@@ -19,10 +19,8 @@ exports.CommonPotion = void 0;
 var AbstractPotion_1 = require("../AbstractPotion");
 var CommonPotion = /** @class */ (function (_super) {
     __extends(CommonPotion, _super);
-    function CommonPotion(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
-        _this.BelongsTo = -1;
-        return _this;
+    function CommonPotion(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     return CommonPotion;
 }(AbstractPotion_1.AbstractPotion));

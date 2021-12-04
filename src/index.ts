@@ -6,6 +6,9 @@ import { connect } from "net";
 import { KeyObject } from "crypto";
 import EventEmitter = require("events");
 import NetworkManager = require("./Managers/NetworkManager");
+import { NPC } from "./Characters/NPC";
+import { Character } from "./Characters/Character";
+import { Projectile } from "./Characters/Projectile";
 
 //(<HTMLInputElement> document.getElementById("layer1")).disabled = true;
 const layer1 = <HTMLCanvasElement> document.getElementById('layer1');
@@ -248,7 +251,7 @@ function startAnimating(fps) {
   fpsInterval = 1000 / fps;
   then = Date.now();
   startTime = then;
-  animate();
+  requestAnimationFrame(animate);
 }
 
 function sendPlayerInfoToServer() {
@@ -300,19 +303,12 @@ function animate() {
       for(const objectKey in ClientObjects) {
         let el = ClientObjects[objectKey];
         if(el == undefined) continue;
-        if(el instanceof Obstacle || el instanceof Item) {
-          const img = new Image();
-          img.src = el.Sprite;
-          context_2.drawImage(
-            img,
-            el.X,
-            el.Y)
-        } else {
-          var newPosition = Interpolate(el.position, el.targetPosition, el.speed, (now - timeThen) / 1000);
-          el.position.x = newPosition.x;
-          el.position.y = newPosition.y;
-          el.imageRenderer.DrawImage(context_2);
+        if(el instanceof Character || el instanceof Projectile) {
+          var newPosition = Interpolate(el.Position, el.TargetPosition, el.Speed, (now - timeThen) / 1000);
+          el.Position.X = newPosition.X;
+          el.Position.Y = newPosition.Y;
         }
+        el.ImageRenderer.DrawImage(context_2);
       }
     }
 

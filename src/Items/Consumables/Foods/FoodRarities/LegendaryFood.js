@@ -19,10 +19,8 @@ exports.LegendaryFood = void 0;
 var AbstractFood_1 = require("../AbstractFood");
 var LegendaryFood = /** @class */ (function (_super) {
     __extends(LegendaryFood, _super);
-    function LegendaryFood(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
-        _this.BelongsTo = -1;
-        return _this;
+    function LegendaryFood(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     return LegendaryFood;
 }(AbstractFood_1.AbstractFood));

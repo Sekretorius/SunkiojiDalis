@@ -19,10 +19,8 @@ exports.CommonFood = void 0;
 var AbstractFood_1 = require("../AbstractFood");
 var CommonFood = /** @class */ (function (_super) {
     __extends(CommonFood, _super);
-    function CommonFood(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
-        _this.BelongsTo = -1;
-        return _this;
+    function CommonFood(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     return CommonFood;
 }(AbstractFood_1.AbstractFood));

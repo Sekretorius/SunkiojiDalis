@@ -32,13 +32,8 @@ export class NPC extends Character
     
     SyncPosition(syncData)
     {
-        this.position.x = this.targetPosition.x;
-        this.position.y = this.targetPosition.y;
-        this.targetPosition = new Vector2D(parseFloat(syncData.RequestData.x), parseFloat(syncData.RequestData.y)); 
-
-        //this.originPosition = new Vector2D(this.position.x, this.position.y);
-
-        //this.elapsedTime = 0;
-        //this.travelTime = CalculateTravelTime(this.originPosition, this.targetPosition, this.speed);
+        this.Position.X = this.TargetPosition.X;
+        this.Position.Y = this.TargetPosition.Y;
+        this.TargetPosition = new Vector2D(parseFloat(syncData.RequestData.x), parseFloat(syncData.RequestData.y)); 
     }
 }

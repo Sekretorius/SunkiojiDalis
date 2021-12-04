@@ -5,48 +5,37 @@ import { DestroyObject } from '../Managers/ClientEngine';
 
 export class Character
 {
-    guid: string;
-    name: string;
-    health: number;
-    //sprite: string;
-    areaId: string;
-    position: any;
-    //width: number;
-    //height: number;
-    //frameX: number;
-    //frameY: number;
-    speed: number;
-    targetPosition: any;
-    originPosition: any;
-    travelTime: number;
-    elapsedTime: number;
+    public Guid: string;
+    public Name: string;
+    public Health: number;
+    public AreaId: string;
+    public Position: any;
+    public Speed: number;
+    public TargetPosition: any;
+    public OriginPosition: any;
+    public TravelTime: number;
+    public ElapsedTime: number;
 
-    imageRenderer: any;
+    ImageRenderer: any;
 
     constructor(guid: string, characterData: any, imageSharedData: any)
     {
-        this.guid = guid;
-        this.name = characterData.name;
-        this.health = parseFloat(characterData.health);
+        this.Guid = guid;
+        this.Name = characterData.name;
+        this.Health = parseFloat(characterData.health);
 
-        this.areaId = characterData.areaId;
-        this.position = new Vector2D(parseFloat(characterData.x), parseFloat(characterData.y));
+        this.AreaId = characterData.areaId;
+        this.Position = new Vector2D(parseFloat(characterData.x), parseFloat(characterData.y));
         
-        
-        this.imageRenderer = new ImageRenderer(imageSharedData, 
+        this.ImageRenderer = new ImageRenderer(imageSharedData, 
             parseInt(characterData.frameX),
             parseInt(characterData.frameY),
-            this.position);
+            this.Position);
 
-        //this.sprite = characterData.sprite;
-        //this.width = parseInt(characterData.width);
-        //this.height = parseInt(characterData.height);
-        //this.frameX = parseInt(characterData.frameX);
-        //this.frameY = parseInt(characterData.frameY);
-        this.speed = parseFloat(characterData.speed);
+        this.Speed = parseFloat(characterData.speed);
 
-        this.targetPosition = new Vector2D(parseFloat(characterData.x), parseFloat(characterData.y));
-        this.originPosition = new Vector2D(parseFloat(characterData.x), parseFloat(characterData.y));
+        this.TargetPosition = new Vector2D(parseFloat(characterData.x), parseFloat(characterData.y));
+        this.OriginPosition = new Vector2D(parseFloat(characterData.x), parseFloat(characterData.y));
     }
 
     GetAttackAlgorithm(){
@@ -71,6 +60,6 @@ export class Character
 
     Destroy(data: string)
     {
-        DestroyObject(this.guid);
+        DestroyObject(this.Guid);
     }
 }

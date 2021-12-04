@@ -19,8 +19,8 @@ exports.AbstractPotion = void 0;
 var AbstractConsumable_1 = require("../AbstractConsumable");
 var AbstractPotion = /** @class */ (function (_super) {
     __extends(AbstractPotion, _super);
-    function AbstractPotion(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
+    function AbstractPotion(guid, itemData, imageSharedData) {
+        var _this = _super.call(this, guid, itemData, imageSharedData) || this;
         _this.Ability = itemData.ability;
         return _this;
     }

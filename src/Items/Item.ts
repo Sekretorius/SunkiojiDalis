@@ -1,23 +1,25 @@
+import { ImageRenderer } from "../Helpers/ImageComponent";
+import { Vector2D } from "../Helpers/Vector2D";
+
 export abstract class Item {
-  public guid: string;
+  public Guid: string;
   public Id: number;
-  public Sprite: string;
   public Name: string;
   public Weight: number;
   public Quantity: number;
-  public X: number;
-  public Y: number;
+  public Position: Vector2D;
   public BelongsTo: number;
+  public ImageRenderer: any;
 
-  constructor(guid: string, itemData: any) {
-    this.guid = guid;
+  constructor(guid: string, itemData: any, imageSharedData: any) {
+    this.Guid = guid;
     this.Id = itemData.id;
-    this.Sprite = itemData.sprite;
     this.Name = itemData.name;
     this.Weight = itemData.weight;
     this.Quantity = itemData.quantity;
-    this.X = itemData.x;
-    this.Y = itemData.y;
     this.BelongsTo = itemData.belongsTo;
+
+    this.Position = new Vector2D(parseFloat(itemData.x), parseFloat(itemData.y));
+    this.ImageRenderer = new ImageRenderer(imageSharedData, 0, 0, this.Position);
   }
 }

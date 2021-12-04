@@ -19,8 +19,8 @@ exports.AbstractEquipable = void 0;
 var Item_1 = require("../Item");
 var AbstractEquipable = /** @class */ (function (_super) {
     __extends(AbstractEquipable, _super);
-    function AbstractEquipable(guid, itemData) {
-        return _super.call(this, guid, itemData) || this;
+    function AbstractEquipable(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     AbstractEquipable.prototype.Equip = function () {
         return 0;

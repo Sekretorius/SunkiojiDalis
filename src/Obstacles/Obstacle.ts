@@ -1,16 +1,19 @@
+import { ImageRenderer } from "../Helpers/ImageComponent";
+import { Vector2D } from "../Helpers/Vector2D";
+
 export abstract class Obstacle {
+  
   public guid: string;
   public Id: number;
-  public Sprite: string;
-  public X: number;
-  public Y: number;
+  public Position: Vector2D;
 
-  constructor(guid: string, itemData: any) {
+  public ImageRenderer: any;
+
+  constructor(guid: string, itemData: any, imageSharedData: any) {
     this.guid = guid;
     this.Id = itemData.id;
-    this.Sprite = itemData.sprite;
-    this.X = itemData.x;
-    this.Y = itemData.y;
+    this.Position = new Vector2D(parseFloat(itemData.x), parseFloat(itemData.y));
+    this.ImageRenderer = new ImageRenderer(imageSharedData, 0, 0, this.Position);
   }
   
   public getId(): number {

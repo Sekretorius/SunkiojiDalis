@@ -19,8 +19,8 @@ exports.PassableObstacle = void 0;
 var Obstacle_1 = require("./Obstacle");
 var PassableObstacle = /** @class */ (function (_super) {
     __extends(PassableObstacle, _super);
-    function PassableObstacle(guid, characterData) {
-        var _this = _super.call(this, guid, characterData) || this;
+    function PassableObstacle(guid, characterData, imageSharedData) {
+        var _this = _super.call(this, guid, characterData, imageSharedData) || this;
         _this.Type = characterData.type;
         return _this;
     }

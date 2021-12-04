@@ -1,16 +1,29 @@
 export class ImageSharedData
 {
-    image: any;
-    sprite : string;
-    sWidth: any;
-    sHeight: any;
+    public Image: any;
+    public Sprite : string;
+    public SWidth: number = 0;
+    public SHeight: number = 0;
 
     constructor(sprite: any, sWidth: any, sHeight: any){
-        this.sprite = sprite;
-        this.sWidth = sWidth;
-        this.sHeight = sHeight;
+        this.Sprite = sprite;
 
-        this.image = new Image();
-        this.image.src = sprite;
+        this.Image = new Image();
+        this.Image.src = sprite;
+
+        var callback = (w, h) => { this.SWidth = w; this.SHeight =h };
+
+        if(sWidth === undefined || sHeight === undefined)
+        {
+            this.Image.onload=function()
+            {
+                callback(this.width, this.height);
+            };
+        }
+        else
+        {
+            this.SWidth = sWidth;
+            this.SHeight = sHeight;
+        }
     }
 }

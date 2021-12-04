@@ -14,6 +14,7 @@ var CommonFood_1 = require("../Items/Consumables/Foods/FoodRarities/CommonFood")
 var LegendaryFood_1 = require("../Items/Consumables/Foods/FoodRarities/LegendaryFood");
 var CommonPotion_1 = require("../Items/Consumables/Potions/PotionRarities/CommonPotion");
 var LegendaryPotion_1 = require("../Items/Consumables/Potions/PotionRarities/LegendaryPotion");
+var Projectile_1 = require("../Characters/Projectile");
 var ImageData_1 = require("../Helpers/ImageData");
 exports.ClientObjects = {}; //objects that have been created
 exports.ClientObjectCount = 0;
@@ -27,45 +28,46 @@ function CreateClientObject(serverRequest) {
 function CreateNewObject(guid, objectData) {
     if (exports.ClientObjects[guid] === undefined) {
         var newObject = void 0;
+        var imageSharedData = GetImageFromData(objectData);
         switch (objectData.objectType) {
             case "FriendlyNpc":
-                newObject = new FriendlyNpc_1.FriendlyNpc(guid, objectData, GetImageFromData(objectData));
+                newObject = new FriendlyNpc_1.FriendlyNpc(guid, objectData, imageSharedData);
                 break;
             case "EnemyNpc":
-                newObject = new EnemyNpc_1.EnemyNpc(guid, objectData, GetImageFromData(objectData));
+                newObject = new EnemyNpc_1.EnemyNpc(guid, objectData, imageSharedData);
                 break;
             case "ImpassableObstacle":
-                newObject = new ImpassableObstacle_1.ImpassableObstacle(guid, objectData);
+                newObject = new ImpassableObstacle_1.ImpassableObstacle(guid, objectData, imageSharedData);
                 break;
             case "PassableObstacle":
-                newObject = new PassableObstacle_1.PassableObstacle(guid, objectData);
+                newObject = new PassableObstacle_1.PassableObstacle(guid, objectData, imageSharedData);
                 break;
             case "CommonArmor":
-                newObject = new CommonArmor_1.CommonArmor(guid, objectData);
+                newObject = new CommonArmor_1.CommonArmor(guid, objectData, imageSharedData);
                 break;
             case "LegendaryArmor":
-                newObject = new LegendaryArmor_1.LegendaryArmor(guid, objectData);
+                newObject = new LegendaryArmor_1.LegendaryArmor(guid, objectData, imageSharedData);
                 break;
             case "CommonWeapon":
-                newObject = new CommonWeapon_1.CommonWeapon(guid, objectData);
+                newObject = new CommonWeapon_1.CommonWeapon(guid, objectData, imageSharedData);
                 break;
             case "LegendaryWeapon":
-                newObject = new LegendaryWeapon_1.LegendaryWeapon(guid, objectData);
+                newObject = new LegendaryWeapon_1.LegendaryWeapon(guid, objectData, imageSharedData);
                 break;
             case "CommonPotion":
-                newObject = new CommonPotion_1.CommonPotion(guid, objectData);
+                newObject = new CommonPotion_1.CommonPotion(guid, objectData, imageSharedData);
                 break;
             case "LegendaryPotion":
-                newObject = new LegendaryPotion_1.LegendaryPotion(guid, objectData);
+                newObject = new LegendaryPotion_1.LegendaryPotion(guid, objectData, imageSharedData);
                 break;
             case "CommonFood":
-                newObject = new CommonFood_1.CommonFood(guid, objectData);
+                newObject = new CommonFood_1.CommonFood(guid, objectData, imageSharedData);
                 break;
             case "LegendaryFood":
-                newObject = new LegendaryFood_1.LegendaryFood(guid, objectData);
+                newObject = new LegendaryFood_1.LegendaryFood(guid, objectData, imageSharedData);
                 break;
             case "Projectile":
-                //newObject = new Projectile(guid, objectData);
+                newObject = new Projectile_1.Projectile(guid, objectData, imageSharedData);
                 break;
         }
         if (newObject !== null) {

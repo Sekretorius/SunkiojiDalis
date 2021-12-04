@@ -19,8 +19,8 @@ exports.AbstractFood = void 0;
 var AbstractConsumable_1 = require("../AbstractConsumable");
 var AbstractFood = /** @class */ (function (_super) {
     __extends(AbstractFood, _super);
-    function AbstractFood(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
+    function AbstractFood(guid, itemData, imageSharedData) {
+        var _this = _super.call(this, guid, itemData, imageSharedData) || this;
         _this.Health = itemData.health;
         return _this;
     }

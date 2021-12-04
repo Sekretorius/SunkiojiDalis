@@ -19,8 +19,8 @@ exports.AbstractWeapon = void 0;
 var AbstractEquipable_1 = require("../AbstractEquipable");
 var AbstractWeapon = /** @class */ (function (_super) {
     __extends(AbstractWeapon, _super);
-    function AbstractWeapon(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
+    function AbstractWeapon(guid, itemData, imageSharedData) {
+        var _this = _super.call(this, guid, itemData, imageSharedData) || this;
         _this.Damage = itemData.damage;
         return _this;
     }

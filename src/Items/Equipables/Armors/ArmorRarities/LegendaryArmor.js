@@ -19,10 +19,8 @@ exports.LegendaryArmor = void 0;
 var AbstractArmor_1 = require("../AbstractArmor");
 var LegendaryArmor = /** @class */ (function (_super) {
     __extends(LegendaryArmor, _super);
-    function LegendaryArmor(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
-        _this.BelongsTo = -1;
-        return _this;
+    function LegendaryArmor(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     return LegendaryArmor;
 }(AbstractArmor_1.AbstractArmor));

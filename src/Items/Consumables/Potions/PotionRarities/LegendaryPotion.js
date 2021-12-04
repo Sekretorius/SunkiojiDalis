@@ -19,10 +19,8 @@ exports.LegendaryPotion = void 0;
 var AbstractPotion_1 = require("../AbstractPotion");
 var LegendaryPotion = /** @class */ (function (_super) {
     __extends(LegendaryPotion, _super);
-    function LegendaryPotion(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
-        _this.BelongsTo = -1;
-        return _this;
+    function LegendaryPotion(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     return LegendaryPotion;
 }(AbstractPotion_1.AbstractPotion));

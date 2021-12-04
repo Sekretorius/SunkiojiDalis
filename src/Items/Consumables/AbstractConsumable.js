@@ -19,8 +19,8 @@ exports.AbstractConsumable = void 0;
 var Item_1 = require("../Item");
 var AbstractConsumable = /** @class */ (function (_super) {
     __extends(AbstractConsumable, _super);
-    function AbstractConsumable(guid, itemData) {
-        return _super.call(this, guid, itemData) || this;
+    function AbstractConsumable(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     AbstractConsumable.prototype.Consume = function () {
         return 0;

@@ -19,10 +19,8 @@ exports.CommonWeapon = void 0;
 var AbstractWeapon_1 = require("../AbstractWeapon");
 var CommonWeapon = /** @class */ (function (_super) {
     __extends(CommonWeapon, _super);
-    function CommonWeapon(guid, itemData) {
-        var _this = _super.call(this, guid, itemData) || this;
-        _this.BelongsTo = -1;
-        return _this;
+    function CommonWeapon(guid, itemData, imageSharedData) {
+        return _super.call(this, guid, itemData, imageSharedData) || this;
     }
     return CommonWeapon;
 }(AbstractWeapon_1.AbstractWeapon));

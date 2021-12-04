@@ -40,9 +40,9 @@ function InvokeObjectMethod(targetObject: any, method: any, data: any): boolean 
 //}
 
 export class NetworkRequest{
-    RequestObjectGuid: string;
-    RequestMethod: string;
-    RequestData: string;
+    public RequestObjectGuid: string;
+    public RequestMethod: string;
+    public RequestData: string;
 
     constructor(requestObjectGuid: string, requestMethod: string, requestData: string){
         this.RequestObjectGuid = requestObjectGuid;
