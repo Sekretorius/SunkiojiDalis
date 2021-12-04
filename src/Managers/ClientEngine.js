@@ -14,25 +14,25 @@ var CommonFood_1 = require("../Items/Consumables/Foods/FoodRarities/CommonFood")
 var LegendaryFood_1 = require("../Items/Consumables/Foods/FoodRarities/LegendaryFood");
 var CommonPotion_1 = require("../Items/Consumables/Potions/PotionRarities/CommonPotion");
 var LegendaryPotion_1 = require("../Items/Consumables/Potions/PotionRarities/LegendaryPotion");
-var Projectile_1 = require("../Characters/Projectile");
+var ImageData_1 = require("../Helpers/ImageData");
 exports.ClientObjects = {}; //objects that have been created
 exports.ClientObjectCount = 0;
 exports.ClientEngineMethods = {};
 exports.ClientEngineMethods["CreateClientObject"] = CreateClientObject;
 exports.ClientEngineMethods["RemoveAllObjects"] = RemoveAllObjects;
+var SharedImageDictionary = {};
 function CreateClientObject(serverRequest) {
     CreateNewObject(serverRequest.RequestObjectGuid, serverRequest.RequestData);
 }
 function CreateNewObject(guid, objectData) {
-    console.log("CREATE " + objectData);
     if (exports.ClientObjects[guid] === undefined) {
         var newObject = void 0;
         switch (objectData.objectType) {
             case "FriendlyNpc":
-                newObject = new FriendlyNpc_1.FriendlyNpc(guid, objectData);
+                newObject = new FriendlyNpc_1.FriendlyNpc(guid, objectData, GetImageFromData(objectData));
                 break;
             case "EnemyNpc":
-                newObject = new EnemyNpc_1.EnemyNpc(guid, objectData);
+                newObject = new EnemyNpc_1.EnemyNpc(guid, objectData, GetImageFromData(objectData));
                 break;
             case "ImpassableObstacle":
                 newObject = new ImpassableObstacle_1.ImpassableObstacle(guid, objectData);
@@ -65,7 +65,7 @@ function CreateNewObject(guid, objectData) {
                 newObject = new LegendaryFood_1.LegendaryFood(guid, objectData);
                 break;
             case "Projectile":
-                newObject = new Projectile_1.Projectile(guid, objectData);
+                //newObject = new Projectile(guid, objectData);
                 break;
         }
         if (newObject !== null) {
@@ -77,6 +77,17 @@ function CreateNewObject(guid, objectData) {
 function RemoveAllObjects(guid, objectData) {
     exports.ClientObjects = {};
     exports.ClientObjectCount = 0;
+}
+function GetImageFromData(data) {
+    return GetImage(data.sprite, data.width, data.height);
+}
+function GetImage(sprite, sWidth, sHeight) {
+    if (SharedImageDictionary[sprite] !== undefined) {
+        return SharedImageDictionary[sprite];
+    }
+    var newData = new ImageData_1.ImageSharedData(sprite, sWidth, sHeight);
+    SharedImageDictionary[sprite] = newData;
+    return newData;
 }
 function DestroyObject(guid) {
     if (exports.ClientObjectCount > 0) {

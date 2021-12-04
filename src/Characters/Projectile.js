@@ -17,7 +17,6 @@ var Projectile = /** @class */ (function () {
         this.originPosition = new Vector2D_1.Vector2D(parseFloat(projectileData.x), parseFloat(projectileData.y));
     }
     Projectile.prototype.SyncPosition = function (syncData) {
-        console.log(syncData);
         this.position = this.targetPosition;
         this.targetPosition = new Vector2D_1.Vector2D(parseFloat(syncData.RequestData.x), parseFloat(syncData.RequestData.y));
     };

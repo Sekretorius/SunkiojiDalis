@@ -13,6 +13,7 @@ import { LegendaryFood } from '../Items/Consumables/Foods/FoodRarities/Legendary
 import { CommonPotion } from '../Items/Consumables/Potions/PotionRarities/CommonPotion';
 import { LegendaryPotion } from '../Items/Consumables/Potions/PotionRarities/LegendaryPotion';
 import { Projectile } from '../Characters/Projectile';
+import { ImageSharedData } from '../Helpers/ImageData';
 
 export var ClientObjects: any = {}; //objects that have been created
 export var ClientObjectCount: number = 0;
@@ -21,21 +22,22 @@ export var ClientEngineMethods: any = {};
 ClientEngineMethods["CreateClientObject"] = CreateClientObject;
 ClientEngineMethods["RemoveAllObjects"] = RemoveAllObjects;
 
+var SharedImageDictionary: any = {};
+
 function CreateClientObject(serverRequest: NetworkRequest) {
     CreateNewObject(serverRequest.RequestObjectGuid, serverRequest.RequestData);
 }
 
 function CreateNewObject(guid: string, objectData: any) {
-    console.log("CREATE " + objectData);
     if(ClientObjects[guid] === undefined){
         let newObject;
         switch(objectData.objectType)
         {
             case "FriendlyNpc":
-                newObject = new FriendlyNpc(guid, objectData);
+                newObject = new FriendlyNpc(guid, objectData, GetImageFromData(objectData));
                 break;
             case "EnemyNpc":
-                newObject = new EnemyNpc(guid, objectData);
+                newObject = new EnemyNpc(guid, objectData, GetImageFromData(objectData));
                 break;
             case "ImpassableObstacle":
                 newObject = new ImpassableObstacle(guid, objectData);
@@ -68,7 +70,7 @@ function CreateNewObject(guid: string, objectData: any) {
                 newObject = new LegendaryFood(guid, objectData);
                 break;
             case "Projectile":
-                newObject = new Projectile(guid, objectData);
+                //newObject = new Projectile(guid, objectData);
                 break;
         }
         if(newObject !== null)
@@ -82,6 +84,22 @@ function CreateNewObject(guid: string, objectData: any) {
 function RemoveAllObjects(guid: string, objectData: any) {
     ClientObjects = {};
     ClientObjectCount = 0;
+}
+
+function GetImageFromData(data: any) : ImageSharedData {
+    return GetImage(data.sprite, data.width, data.height);
+}
+
+function GetImage(sprite: any, sWidth: any, sHeight: any) : ImageSharedData
+{
+    if(SharedImageDictionary[sprite] !== undefined)
+    {
+        return SharedImageDictionary[sprite];
+    }
+
+    var newData = new ImageSharedData(sprite, sWidth, sHeight);
+    SharedImageDictionary[sprite] = newData;
+    return newData;
 }
 
 export function DestroyObject(guid: string){

@@ -1,10 +1,11 @@
+import { ImageSharedData } from '../Helpers/ImageData';
 import { NPC } from './NPC';
 
 export class FriendlyNpc extends NPC
 {
-    constructor(guid: string, characterData: any)
+    constructor(guid: string, characterData: any, imageSharedData: any)
     {
-        super(guid, characterData);
+        super(guid, characterData, imageSharedData);
     }
 
     GetAttackAlgorithm(){

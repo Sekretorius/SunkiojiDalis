@@ -19,8 +19,8 @@ exports.EnemyNpc = void 0;
 var NPC_1 = require("./NPC");
 var EnemyNpc = /** @class */ (function (_super) {
     __extends(EnemyNpc, _super);
-    function EnemyNpc(guid, characterData) {
-        return _super.call(this, guid, characterData) || this;
+    function EnemyNpc(guid, characterData, imageSharedData) {
+        return _super.call(this, guid, characterData, imageSharedData) || this;
     }
     EnemyNpc.prototype.GetAttackAlgorithm = function () {
         //maybe use this for visual showing

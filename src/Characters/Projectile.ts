@@ -35,7 +35,6 @@ export class Projectile
 
     SyncPosition(syncData)
     {
-        console.log(syncData);
         this.position = this.targetPosition;
         this.targetPosition = new Vector2D(parseFloat(syncData.RequestData.x), parseFloat(syncData.RequestData.y)); 
     }

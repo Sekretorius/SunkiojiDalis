@@ -1,12 +1,13 @@
 import { Character } from './Character';
 import { Vector2D } from '../Helpers/Vector2D';
 import { CalculateTravelTime } from '../Managers/ClientEngine';
+import { ImageSharedData } from '../Helpers/ImageData';
 
 export class NPC extends Character
 {
-    constructor(guid: string, characterData: any)
+    constructor(guid: string, characterData: any, imageSharedData: any)
     {
-        super(guid, characterData);
+        super(guid, characterData, imageSharedData);
     }
 
     SetAttackAlgorithm(){
@@ -31,7 +32,8 @@ export class NPC extends Character
     
     SyncPosition(syncData)
     {
-        this.position = this.targetPosition;
+        this.position.x = this.targetPosition.x;
+        this.position.y = this.targetPosition.y;
         this.targetPosition = new Vector2D(parseFloat(syncData.RequestData.x), parseFloat(syncData.RequestData.y)); 
 
         //this.originPosition = new Vector2D(this.position.x, this.position.y);

@@ -19,8 +19,8 @@ exports.FriendlyNpc = void 0;
 var NPC_1 = require("./NPC");
 var FriendlyNpc = /** @class */ (function (_super) {
     __extends(FriendlyNpc, _super);
-    function FriendlyNpc(guid, characterData) {
-        return _super.call(this, guid, characterData) || this;
+    function FriendlyNpc(guid, characterData, imageSharedData) {
+        return _super.call(this, guid, characterData, imageSharedData) || this;
     }
     FriendlyNpc.prototype.GetAttackAlgorithm = function () {
         //maybe use this for visual showing

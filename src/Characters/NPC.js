@@ -20,8 +20,8 @@ var Character_1 = require("./Character");
 var Vector2D_1 = require("../Helpers/Vector2D");
 var NPC = /** @class */ (function (_super) {
     __extends(NPC, _super);
-    function NPC(guid, characterData) {
-        return _super.call(this, guid, characterData) || this;
+    function NPC(guid, characterData, imageSharedData) {
+        return _super.call(this, guid, characterData, imageSharedData) || this;
     }
     NPC.prototype.SetAttackAlgorithm = function () {
         //maybe use this for visual showing
@@ -36,7 +36,8 @@ var NPC = /** @class */ (function (_super) {
     NPC.prototype.Die = function () {
     };
     NPC.prototype.SyncPosition = function (syncData) {
-        this.position = this.targetPosition;
+        this.position.x = this.targetPosition.x;
+        this.position.y = this.targetPosition.y;
         this.targetPosition = new Vector2D_1.Vector2D(parseFloat(syncData.RequestData.x), parseFloat(syncData.RequestData.y));
         //this.originPosition = new Vector2D(this.position.x, this.position.y);
         //this.elapsedTime = 0;

@@ -7,11 +7,20 @@ import { KeyObject } from "crypto";
 import EventEmitter = require("events");
 import NetworkManager = require("./Managers/NetworkManager");
 
-(<HTMLInputElement> document.getElementById("canvas")).disabled = true;
-const canvas = <HTMLCanvasElement> document.getElementById('canvas');
-const context = canvas.getContext('2d');
-canvas.width = 800;
-canvas.height = 500;
+//(<HTMLInputElement> document.getElementById("layer1")).disabled = true;
+const layer1 = <HTMLCanvasElement> document.getElementById('layer1');
+const context_1 = layer1.getContext('2d');
+layer1.width = 800;
+layer1.height = 500;
+
+//(<HTMLInputElement> document.getElementById("layer2")).disabled = true;
+const layer2 = <HTMLCanvasElement> document.getElementById('layer2');
+const context_2 = layer2.getContext('2d');
+layer2.width = 800;
+layer2.height = 500;
+
+
+
 let connectionID = "";
 
 const keys = [];
@@ -124,7 +133,7 @@ window.onload = function () {
         console.log(connection.state);
 
         joinGame();
-        (<HTMLInputElement>document.getElementById("canvas")).disabled = false;
+        //(<HTMLInputElement>document.getElementById("canvas")).disabled = false;
         startAnimating(30);
     }).catch(function (err) {
         //to do: add notification for user 
@@ -143,7 +152,6 @@ window.onload = function () {
 		  player.worldX = element.worldX;
 		  player.worldY = element.worldY;
 		  player.background = element.background;
-		  console.log(player.background)
 		  break;
 		}
 	  }
@@ -155,13 +163,11 @@ window.onload = function () {
 
     connection.on("RecieveNotification", function (message) {
         notification.text = JSON.parse(message);
-        console.log(notification.text);
     });
 
     connection.on("RecieveId", function (id) {
         player.id = id;
         controls.id = id;
-        console.log(player.id);
     });
 
     connection.on("ClientRequestHandler", function (requests) {
@@ -195,7 +201,7 @@ background.src = player.background;
 function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
   const playerSprite = new Image();
   playerSprite.src = img;
-  context.drawImage(playerSprite, sX, sY, sW, sH, dX, dY, dW, dH);
+  context_2.drawImage(playerSprite, sX, sY, sW, sH, dX, dY, dW, dH);
 }
 
 window.addEventListener("keydown", function(e) {
@@ -257,17 +263,21 @@ function sendPlayerControlsToServer() {
         });
     resetControls();
 }
+
 let timeThen = 0;
 function animate() {
-  timeThen = now;
-  requestAnimationFrame(animate);
   now = Date.now();
   elapsed = now - then;
   if(elapsed > fpsInterval) {
     then = now - (elapsed % fpsInterval);
-    context.clearRect(0, 0, canvas.width, canvas.height)
-    background.src = player.background;
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
+    context_2.clearRect(0, 0, layer2.width, layer2.height)
+    //context_1.clearRect(0, 0, layer1.width, layer1.height)
+    
+    if(background.src !== player.background)
+    {
+      background.src = player.background;
+      context_1.drawImage(background, 0, 0, layer1.width, layer1.height);
+    }
 
     if (otherPlayers.length > 0) {
       for(const el of otherPlayers) {
@@ -292,22 +302,15 @@ function animate() {
         if(el instanceof Obstacle || el instanceof Item) {
           const img = new Image();
           img.src = el.Sprite;
-          context.drawImage(
+          context_2.drawImage(
             img,
             el.X,
             el.Y)
         } else {
-          el.position = Interpolate(el.position, el.targetPosition, el.speed, (now - timeThen) / 1000);
-          drawSprite(
-            el.sprite,
-            el.width * el.frameX,
-            el.height * el.frameY,
-            el.width,
-            el.height,
-            el.position.x,
-            el.position.y,
-            el.width,
-            el.height);
+          var newPosition = Interpolate(el.position, el.targetPosition, el.speed, (now - timeThen) / 1000);
+          el.position.x = newPosition.x;
+          el.position.y = newPosition.y;
+          el.imageRenderer.DrawImage(context_2);
         }
       }
     }
@@ -316,7 +319,7 @@ function animate() {
       for(const el of items) {
         const img = new Image();
         img.src = el.Sprite;
-        context.drawImage(
+        context_2.drawImage(
           img,
           el.X,
           el.Y)
@@ -324,16 +327,16 @@ function animate() {
     }
 
 
-
+    timeThen = now;
     //handlePlayerFrame();
     
     //to do: send/update player info to server when it is needed
-    if (player.id !== -1) {
-      movePlayer();
-      //sendPlayerInfoToServer();
-      sendPlayerControlsToServer();
-      getItems();
-    }
-    requestAnimationFrame(animate);
   }
+  if (player.id !== -1) {
+    movePlayer();
+    //sendPlayerInfoToServer();
+    sendPlayerControlsToServer();
+    getItems();
+  }
+  requestAnimationFrame(animate);
 }
