@@ -26,7 +26,7 @@ namespace SignalRWebPack.Proxies
         }
 
         public void check(){
-             if(worldy !=(1)){
+             if(playerdata.worldX + worldx != 3 || playerdata.worldY + worldy != 2){
                 trueproxy = new Trueproxy(playerdata, worldx, worldy, x, y);
                 trueproxy.check();
             }
