@@ -21,17 +21,15 @@ namespace SignalRWebPack.Facades
 
         public void Builder(){
             var director = new Director();
-            var builder = new DesertBuilder(2, 3);
-            director.Builder = builder;
+            var desertBuilder = new DesertBuilder(2, 3);
+            director.Builder = desertBuilder;
             director.BuildArea();
-            var desert = builder.GetProduct();
-            World.Instance.SwapArea(desert);
-
             var forestBuilder = new ForestBuilder(4, 3);
             director.Builder = forestBuilder;
             director.BuildArea();
-            var forest = forestBuilder.GetProduct();
-            World.Instance.SwapArea(forest);
+            var defaultBuilder = new Builder(1, 3);
+            director.Builder = defaultBuilder;
+            director.BuildArea();
         }
         public void Factory(){
             NpcCreator npcCreator = new NpcCreator();

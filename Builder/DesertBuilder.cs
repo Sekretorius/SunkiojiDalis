@@ -5,25 +5,25 @@ using SignalRWebPack.Hubs;
 using SignalRWebPack.Obstacles;
 
 namespace SignalRWebPack {
-  public class DesertBuilder : IBuilder {
+  public class DesertBuilder : Builder {
         private int x;
         private int y;
-        private DesertArea desert;
+        private DesertArea area;
         
-        public DesertBuilder(int x, int y)
+        public DesertBuilder(int x, int y): base(x, y)
         {
-            this.desert = new DesertArea(x, y);
+            this.area = new DesertArea(x, y);
             this.x = x;
             this.y = y;
             this.Reset();
         }
         
-        public void Reset()
+        public override void Reset()
         {
-            this.desert = new DesertArea(this.x, this.y);
+            this.area = new DesertArea(this.x, this.y);
         }
         
-        public void AddNPCs()
+        public override void AddNPCs()
         {
             var npcCreator = new NpcCreator();
             var enemy = npcCreator.FactoryMethod(NpcType.Animal, null, $"{x},{y}");
@@ -39,31 +39,31 @@ namespace SignalRWebPack {
             randomEnemy_1.SetAttackAlgorithm(new Melee(randomEnemy_1.AreaId, 5f, 10f));
             randomEnemy_2.SetAttackAlgorithm(new Melee(randomEnemy_2.AreaId, 10f, 10f));
 
-            this.desert.AddNPC(enemy);
-            this.desert.AddNPC(randomEnemy_1);
-            this.desert.AddNPC(randomEnemy_2);
+            this.area.AddNPC(enemy);
+            this.area.AddNPC(randomEnemy_1);
+            this.area.AddNPC(randomEnemy_2);
         }
         
-        public void AddItems()
+        public override void AddItems()
         {
             var item = ItemsList.GenerateItem();
             item.AreaId = $"{x},{y}";
-            this.desert.AddItem(item);
+            this.area.AddItem(item);
         }
         
-        public void AddObstacles()
+        public override void AddObstacles()
         {   
             var obstacleCreator = new ObstacleCreator();
-            this.desert.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
-            this.desert.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
-            this.desert.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
-            this.desert.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Passable, "cactus", $"{x},{y}"));
-            this.desert.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Passable, "cactus", $"{x},{y}"));
+            this.area.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
+            this.area.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
+            this.area.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Impassable, "rocks1", $"{x},{y}"));
+            this.area.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Passable, "cactus", $"{x},{y}"));
+            this.area.AddObstacle(obstacleCreator.FactoryMethod(ObstacleType.Passable, "cactus", $"{x},{y}"));
         }
 
-        public DesertArea GetProduct()
+        public override Area GetProduct()
         {
-            DesertArea result = this.desert;
+            DesertArea result = this.area;
             this.Reset();
             World.Instance.SwapArea(result);
             return result;
