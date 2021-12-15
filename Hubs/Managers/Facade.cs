@@ -21,11 +21,14 @@ namespace SignalRWebPack.Facades
 
         public void Builder(){
             var director = new Director();
-            var builder = new Builder(2, 3);
-            director.Builder = builder;
+            var desertBuilder = new DesertBuilder(2, 3);
+            director.Builder = desertBuilder;
             director.BuildArea();
-            var forestBuilder = new Builder(4, 3);
+            var forestBuilder = new ForestBuilder(4, 3);
             director.Builder = forestBuilder;
+            director.BuildArea();
+            var defaultBuilder = new Builder(1, 3);
+            director.Builder = defaultBuilder;
             director.BuildArea();
         }
         public void Factory(){

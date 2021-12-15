@@ -10,9 +10,6 @@ namespace SignalRWebPack {
             set { _builder = value; } 
         }
         
-        // The Director can construct several product variations using the same
-        // building steps.
-        
         public void BuildArea()
         {
             this._builder.AddNPCs();
