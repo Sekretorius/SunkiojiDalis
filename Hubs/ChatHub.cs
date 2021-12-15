@@ -275,45 +275,10 @@ namespace SignalRWebPack.Hubs
             Player player;
             lock (PlayerProccessLock)
             {
-                player = PlayersList.players[playerControls.id];
+                player = PlayersList.players[playerControls.Id];
             }
 
-
-            if (playerControls.undo)
-            {
-                player.control.Undo();
-            }
-            else if (playerControls.undoMsg)
-            {
-                player.control.UndoMsg();
-            }
-            else
-            {
-                if (playerControls.up)
-                {
-                    player.control.MoveUp();
-                }
-                if (playerControls.left)
-                {
-                    player.control.MoveLeft();
-                }
-                if (playerControls.down)
-                {
-                    player.control.MoveDown();
-                }
-                if (playerControls.right)
-                {
-                    player.control.MoveRight();
-                }
-                if (playerControls.change)
-                {
-                    player.control.Change();
-                }
-                if (playerControls.checkInv)
-                {
-                    player.control.CheckInv();
-                }
-            }
+            player.control.ChangeControls(playerControls);
 
             if (player.x <= World.transitionOffset)
             {

@@ -58,12 +58,17 @@ public class QuadTree
         if (!Boundry.Intersects(rectangle)) return new List<ColliderPoint>();
 
         List<ColliderPoint> foundPoints = new List<ColliderPoint>();
-        foreach (ColliderPoint point in points)
+
+        ListIterator<ColliderPoint> iterator = new ListIterator<ColliderPoint>(foundPoints);
+
+        while(iterator.Current() != null)
         {
+            ColliderPoint point = iterator.Current();
             if (rectangle.Contains(point.ColliderVertex))
             {
                 foundPoints.Add(point);
             }
+            iterator.Next();
         }
 
         if (isDivided)

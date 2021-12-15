@@ -5,8 +5,13 @@ namespace SignalRWebPack
     public class Subject
     {
         private List<IObserver> observers = new List<IObserver>();
-
+        private ListIterator<IObserver> iteratedObservers;
         private string msg;
+
+        public Subject()
+        {
+            iteratedObservers = new ListIterator<IObserver>(observers);
+        }
         public void Attatch(IObserver observer) 
         {
             observers.Add(observer);
@@ -17,8 +22,12 @@ namespace SignalRWebPack
         }
         public void NotifyAll() 
         {
-            foreach (var observer in observers)
-                observer.Update();
+            while(iteratedObservers.Current() != null)
+            {
+                iteratedObservers.Current().Update();
+                iteratedObservers.Next();
+            }
+            iteratedObservers.Reset();
         }
         public virtual void ReceiveFromClient(string msg) 
         {

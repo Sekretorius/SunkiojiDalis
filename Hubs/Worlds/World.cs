@@ -28,7 +28,7 @@ namespace SignalRWebPack.Hubs.Worlds
 
         public List<Message> Messages;
 
-        public World()
+        public World() : base()
         {
             for (int i = 0; i < world.GetLength(0); i++)
                 for (int t = 0; t < world.GetLength(1); t++) {

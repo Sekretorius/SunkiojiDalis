@@ -16,11 +16,9 @@ namespace SignalRWebPack
         private MessageHandler selectHandler;
 
         private MessageHandler behaviorHandler;
-
-        private List<ICommand> commands;
-
         private List<ICommand> msgCommands;
-
+        private StateManager controllCommandStateManager;
+        private Controls playerControls;
         private Player player;
 
         private Group selected;
@@ -29,8 +27,9 @@ namespace SignalRWebPack
 
         public PlayerControl(Player player)
         {
-            commands = new List<ICommand>();
+            controllCommandStateManager = new StateManager();
             msgCommands = new List<ICommand>();
+            playerControls = new Controls(player.getId(), false, false, false, false, false, false, false, false);
             this.player = player;
 
             if (createHandler == null)
@@ -86,39 +85,33 @@ namespace SignalRWebPack
         {
             ICommand command = new MoveLeftCommand(player);
             command.Execute();
-            commands.Add(command);
         }
         public void MoveRight()
         {
             ICommand command = new MoveRightCommand(player);
             command.Execute();
-            commands.Add(command);
         }
         public void MoveUp()
         {
             ICommand command = new MoveUpCommand(player);
             command.Execute();
-            commands.Add(command);
         }
         public void MoveDown()
         {
             ICommand command = new MoveDownCommand(player);
             command.Execute();
-            commands.Add(command);
         }
 
         public void Change()
         {
             ICommand command = new ChangeNPCCommand(player);
             command.Execute();
-            commands.Add(command);
         }
 
         public void CheckInv()
         {
             ICommand command = new ChekInvCommand(player);
             command.Execute();
-            commands.Add(command);
         }
 
         public void SendMessage(Message msg)
@@ -128,16 +121,6 @@ namespace SignalRWebPack
             msgCommands.Add(command);
         }
 
-        public void Undo()
-        {
-            if (commands.Count > 0)
-            {
-                ICommand command = commands[commands.Count-1];
-                command.Undo();
-                commands.Remove(command);
-            }
-        }
-
         public void UndoMsg()
         {
             if (msgCommands.Count > 0)
@@ -145,6 +128,73 @@ namespace SignalRWebPack
                 ICommand command = msgCommands[msgCommands.Count - 1];
                 command.Undo();
                 msgCommands.Remove(command);
+            }
+        }
+
+        public void ChangeControls(Controls controls)
+        {
+            playerControls.Override(controls);
+            
+            if (controls.Undo)
+            {
+                playerControls.SetState(controllCommandStateManager.RestoreState());
+                UndoControlls(playerControls);
+            }
+            else if (controls.UndoMsg)
+            {
+                player.control.UndoMsg();
+            }
+            else
+            {
+                ReadControlls(controls);
+                controllCommandStateManager.StoreState(playerControls.SaveState());
+            }
+        }
+        public void ReadControlls(Controls controls)
+        {
+            if (controls.Up)
+            {
+                player.control.MoveUp();
+            }
+            if (controls.Left)
+            {
+                player.control.MoveLeft();
+            }
+            if (controls.Down)
+            {
+                player.control.MoveDown();
+            }
+            if (controls.Right)
+            {
+                player.control.MoveRight();
+            }
+            if (controls.Change)
+            {
+                player.control.Change();
+            }
+            if (controls.CheckInv)
+            {
+                player.control.CheckInv();
+            }
+        }
+
+        public void UndoControlls(Controls controls)
+        {
+            if (controls.Up)
+            {
+                (new MoveUpCommand(player)).Undo();
+            }
+            if (controls.Left)
+            {
+                (new MoveLeftCommand(player)).Undo();
+            }
+            if (controls.Down)
+            {
+                (new MoveDownCommand(player)).Undo();
+            }
+            if (controls.Right)
+            {
+                (new MoveRightCommand(player)).Undo();
             }
         }
 
