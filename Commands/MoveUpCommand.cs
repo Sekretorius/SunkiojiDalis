@@ -24,5 +24,9 @@ namespace SignalRWebPack
             player.frameY = frame;
         }
 
+        public void CreateSave()
+        {
+
+        }
     }
 }

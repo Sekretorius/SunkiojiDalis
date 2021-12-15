@@ -10,7 +10,12 @@ namespace SignalRWebPack.Hubs.Worlds
         public int y { get; private set; }
         public Dictionary<int, Player> players { get; private set; } = new Dictionary<int, Player>();
         public Dictionary<int, Item> items { get; private set; } = new Dictionary<int, Item>();
-        public Dictionary<string, NPC> npcs { get; private set; } = new Dictionary<string, NPC>();
+        public List<NPC> npcs { get; private set; } = new List<NPC>();
+
+        public Group group = new("root");
+
+        public HashSet<string> groups;
+
         public Dictionary<int, Obstacle> obstacles { get; private set; } = new Dictionary<int, Obstacle>();
         public string background;
 
@@ -55,15 +60,15 @@ namespace SignalRWebPack.Hubs.Worlds
         // NPCs
         public void AddNPC(NPC npc)
         {
-            npcs[npc.getName()] = npc;
+            npcs.Add(npc);
         }
         public void RemoveNPC(NPC npc)
         {
-            npcs.Remove(npc.getName());
+            npcs.Remove(npc);
         }
         public void UpdateNPC(NPC npc)
         {
-            npcs[npc.getName()] = npc;
+
         }
 
         // Obstacles

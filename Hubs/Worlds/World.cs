@@ -28,7 +28,7 @@ namespace SignalRWebPack.Hubs.Worlds
 
         public List<Message> Messages;
 
-        public World()
+        public World() : base()
         {
             for (int i = 0; i < world.GetLength(0); i++)
                 for (int t = 0; t < world.GetLength(1); t++) {
@@ -59,12 +59,22 @@ namespace SignalRWebPack.Hubs.Worlds
 
         public List<NPC> GetNPCs(int x, int y)
         {
-            return world[x, y].npcs.Values.ToList();
+            return world[x, y].npcs;
         }
 
         public List<Obstacle> GetObstacles(int x, int y)
         {
             return world[x, y].obstacles.Values.ToList();
+        }
+
+        public Group GetGroup(int x, int y)
+        {
+            return world[x, y].group;
+        }
+
+        public HashSet<string> GetGroupNames(int x, int y)
+        {
+            return world[x, y].groups;
         }
 
         public void AddNPC(NPC npc)
