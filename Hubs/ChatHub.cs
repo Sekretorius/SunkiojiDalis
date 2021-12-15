@@ -9,6 +9,7 @@ using SignalRWebPack.Hubs.Worlds;
 using SignalRWebPack.Network;
 using SignalRWebPack.Characters;
 using SignalRWebPack.Facades;
+using SignalRWebPack.Proxies;
 
 namespace SignalRWebPack.Hubs
 {
@@ -208,8 +209,8 @@ namespace SignalRWebPack.Hubs
             // Leaving the group
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, PlayersList.players[convertedPlayer.getId()].GetGroupId());
             await Clients.Group(PlayersList.players[convertedPlayer.getId()].GetGroupId()).SendAsync("RecieveInfoAboutOtherPlayers", JsonConvert.SerializeObject(World.Instance.GetPlayers(convertedPlayer.worldX, convertedPlayer.worldY)));
-
-            World.Instance.MoveToArea(convertedPlayer, worldX, worldY, x, y);
+            Ourproxy returns = new Proxycheck(convertedPlayer, worldX, worldY, x, y);
+            returns.check();
             
             // Entering new group
             lock(PlayerProccessLock)
