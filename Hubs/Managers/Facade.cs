@@ -60,6 +60,18 @@ namespace SignalRWebPack.Facades
             Console.WriteLine("Test if change worked: ");
             Console.WriteLine("name: " +acc[0].name + ", Position x: " + acc[0].Position.X + ", Position y: " + acc[0].Position.Y);
         }
+        public void testState(){
+            NpcCreator npcCreator = new NpcCreator();
+            NPC enemy = npcCreator.FactoryMethod(NpcType.Enemy, "", $"{2},{3}");
+
+            enemy.StateChange();
+            enemy.StateChange();
+            enemy.StateChange();
+            enemy.StateChange();
+            enemy.StateChange();
+            enemy.StateChange();
+            enemy.StateChange();
+        }
         public void UndoPrototype(){
             //List<NPC> asd = World.Instance.GetNPCs(2, 3);
             //Character a = (Character)asd[2].ShallowCopy();
