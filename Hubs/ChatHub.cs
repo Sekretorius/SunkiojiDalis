@@ -375,7 +375,7 @@ namespace SignalRWebPack.Hubs
         {
             Message msg = JsonConvert.DeserializeObject<Message>(message);
             var player = PlayersList.players[int.Parse(msg.id)];
-            player.control.SendMessage(msg);
+            player.control.HandleMessage(msg.message);
         }
 
     }

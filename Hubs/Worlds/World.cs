@@ -59,12 +59,22 @@ namespace SignalRWebPack.Hubs.Worlds
 
         public List<NPC> GetNPCs(int x, int y)
         {
-            return world[x, y].npcs.Values.ToList();
+            return world[x, y].npcs;
         }
 
         public List<Obstacle> GetObstacles(int x, int y)
         {
             return world[x, y].obstacles.Values.ToList();
+        }
+
+        public Group GetGroup(int x, int y)
+        {
+            return world[x, y].group;
+        }
+
+        public HashSet<string> GetGroupNames(int x, int y)
+        {
+            return world[x, y].groups;
         }
 
         public void AddNPC(NPC npc)

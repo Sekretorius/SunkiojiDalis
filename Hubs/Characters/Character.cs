@@ -10,7 +10,7 @@ using SignalRWebPack.Network;
 namespace SignalRWebPack.Characters
 {
     [JsonObject(MemberSerialization.OptOut)]
-    public abstract class Character : NetworkObject
+    public abstract class Character : NetworkObject, Grouped
     {
         public string name;
         public float health;
@@ -103,6 +103,26 @@ namespace SignalRWebPack.Characters
             charas.SetMoveAlgorithm(this.GetMoveAlgorithm().DeepCopy());
 
            return charas;
-        } 
+        }
+
+        public void Add(Grouped c)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(Grouped c)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetBehavior(MoveAlgorithm behavior)
+        {
+            SetMoveAlgorithm(behavior);
+        }
+
+        public bool IsCharacter()
+        {
+            return true;
+        }
     }
 }
