@@ -9,7 +9,8 @@ namespace SignalRWebPack.States
     public class IdleState : State
     {
         public void Handle(NPC npc){
-            Console.WriteLine("Im idle state");
+            npc.SetMoveAlgorithm(new Stand());
+            npc.health = 200;
         }
     }
 }

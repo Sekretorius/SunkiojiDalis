@@ -9,7 +9,7 @@ namespace SignalRWebPack.States
     public class AttackState : State
     {
         public void Handle(NPC npc){
-            Console.WriteLine("Im attacking");
+            npc.health -=10;
         }
     }
 }

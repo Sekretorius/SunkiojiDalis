@@ -30,21 +30,26 @@ namespace SignalRWebPack.Characters
         }
 
         public void StateChange(){
-            Console.WriteLine("Initializing state change: ");
-            if(this.currentState is IdleState){
+            //Console.WriteLine("Initializing state change for "+ name);
+            if(this.currentState is IdleState && (name.Equals("animal") || name.Equals("fast_enemy")|| name.Equals("normal_enemy") || name.Equals("slow_enemy"))){
                 this.currentState = new PatrolState();
+                Console.WriteLine(name + " changed to patrol");
             }
             else if(this.currentState is PatrolState){
                 this.currentState = new AttackState();
+                Console.WriteLine(name + " changed to attack");
             }
             else if(this.currentState is AttackState){
                 this.currentState = new RetreatState();
+                Console.WriteLine(name + " changed to retreat");
             }
-            else if(this.currentState is RetreatState && health == 0){
+            else if(this.currentState is RetreatState && health < 10){
                 this.currentState = new HealState();
+                Console.WriteLine(name + " changed to heal");
             }
-            else if(this.currentState is HealState ){
+            else if(this.currentState is HealState && health >= 200){
                 this.currentState = new PatrolState();
+                Console.WriteLine(name + " changed to patrol");
             }
             currentState.Handle(this);         
         }

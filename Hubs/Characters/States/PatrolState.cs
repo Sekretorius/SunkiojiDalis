@@ -9,7 +9,7 @@ namespace SignalRWebPack.States
     public class PatrolState : State
     {
         public void Handle(NPC npc){
-            Console.WriteLine("Im patrolling");
+            npc.SetMoveAlgorithm(new Walk());
         }
     }
 }

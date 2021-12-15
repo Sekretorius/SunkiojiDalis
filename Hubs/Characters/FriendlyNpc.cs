@@ -49,6 +49,7 @@ namespace SignalRWebPack.Characters
                 }
             }
             this.Position = this.moveAlgorithm.Move(this.Position, targets[c], speed);
+            this.StateChange();
             SyncDataWithGroup(AreaId, "SyncPosition", $"{{\"x\":\"{this.Position.X}\", \"y\":\"{this.Position.Y}\"}}");
         }
 

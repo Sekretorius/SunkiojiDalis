@@ -9,7 +9,8 @@ namespace SignalRWebPack.States
     public class HealState : State
     {
             public void Handle(NPC npc){
-            Console.WriteLine("Im healing");
+            npc.SetMoveAlgorithm(new Stand());
+            npc.health += 10;
         }
     }
 }

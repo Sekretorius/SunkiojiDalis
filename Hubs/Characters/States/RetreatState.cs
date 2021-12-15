@@ -9,7 +9,7 @@ namespace SignalRWebPack.States
     public class RetreatState : State
     {
         public void Handle(NPC npc){
-            Console.WriteLine("Im retreating");
+            npc.health -=10;
         }
     }
 }
