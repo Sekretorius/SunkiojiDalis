@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using SignalRWebPack.Characters;
 using SignalRWebPack.Obstacles;
+using SignalRWebPack.Managers;
 
 namespace SignalRWebPack.Hubs.Worlds
 {
@@ -85,8 +86,6 @@ namespace SignalRWebPack.Hubs.Worlds
             obstacles[obstacle.Id] = obstacle;
         }
 
-        public virtual int DoSpecialEvent() {
-            return -1;
-        }
+        public virtual void Accept(IVisitor visitor) {}
     }
 }

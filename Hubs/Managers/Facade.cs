@@ -24,6 +24,8 @@ namespace SignalRWebPack.Facades
             var desertBuilder = new DesertBuilder(2, 3);
             director.Builder = desertBuilder;
             director.BuildArea();
+            // Template - a forest-builder using the default AddNPCs() implementation
+            //            and a template builder.
             var forestBuilder = new ForestBuilder(4, 3);
             director.Builder = forestBuilder;
             director.BuildArea();
@@ -31,6 +33,26 @@ namespace SignalRWebPack.Facades
             director.Builder = defaultBuilder;
             director.BuildArea();
         }
+
+        public void Visitor() {
+            List<Area> components = new List<Area>
+            {
+                World.Instance.GetArea(2, 3), // Forest area.
+                World.Instance.GetArea(1, 3)  // Desert area.
+            };
+
+            var areaEventVisitor = new AreaEventVisitor();
+            var obstacleRemovalVisitor = new ObstacleRemovalVisitor();
+            var npcRemovalVisitor = new NPCRemovalVisitor();
+            Console.WriteLine("-------------Visitor--------------");
+            foreach (var component in components)
+            {
+                component.Accept(areaEventVisitor);
+                component.Accept(obstacleRemovalVisitor);
+                component.Accept(npcRemovalVisitor);
+            }
+        }
+
         public void Factory(){
             NpcCreator npcCreator = new NpcCreator();
             NPC friendly = npcCreator.FactoryMethod(NpcType.Friendly, "", $"{3},{3}");

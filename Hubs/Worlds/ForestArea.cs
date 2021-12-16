@@ -1,4 +1,5 @@
 using System;
+using SignalRWebPack.Managers;
 
 namespace SignalRWebPack.Hubs.Worlds
 {
@@ -7,13 +8,13 @@ namespace SignalRWebPack.Hubs.Worlds
       this.background = "resources/backgrounds/forest.png";
     }
 
-    public override int DoSpecialEvent(){
-      return CreateFire();
-    }
-
     public int CreateFire() {
       Random rnd = new Random();
       return rnd.Next(0, 20);
+    }
+
+    public override void Accept(IVisitor visitor) {
+      visitor.VisitForestArea(this);
     }
   }
 }
