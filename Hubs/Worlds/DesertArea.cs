@@ -1,4 +1,5 @@
 using System;
+using SignalRWebPack.Managers;
 
 namespace SignalRWebPack.Hubs.Worlds
 {
@@ -7,13 +8,13 @@ namespace SignalRWebPack.Hubs.Worlds
       this.background = "resources/backgrounds/desert.png";
     }
 
-    public override int DoSpecialEvent(){
-      return CreateSandstorm();
-    }
-
     public int CreateSandstorm() {
       Random rnd = new Random();
       return rnd.Next(0, 10);
+    }
+
+    public override void Accept(IVisitor visitor) {
+      visitor.VisitDesertArea(this);
     }
   }
 }
