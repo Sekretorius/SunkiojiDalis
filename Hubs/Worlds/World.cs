@@ -43,6 +43,10 @@ namespace SignalRWebPack.Hubs.Worlds
             world[area.x, area.y] = area;
         }
 
+        public Area GetArea(int x, int y) {
+            return world[x, y];
+        }
+
         public string GetBackground(int x, int y){
             return world[x, y].background;
         }
@@ -65,6 +69,12 @@ namespace SignalRWebPack.Hubs.Worlds
         public List<Obstacle> GetObstacles(int x, int y)
         {
             return world[x, y].obstacles.Values.ToList();
+        }
+
+        public void RemoveObstacle(Obstacle obstacle)
+        {
+            var indexes = ParseStringToIntArray(obstacle.AreaId);
+            world[indexes[0], indexes[1]].RemoveObstacle(obstacle);
         }
 
         public Group GetGroup(int x, int y)
