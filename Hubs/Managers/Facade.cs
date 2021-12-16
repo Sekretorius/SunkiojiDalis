@@ -38,7 +38,7 @@ namespace SignalRWebPack.Facades
             List<Area> components = new List<Area>
             {
                 World.Instance.GetArea(2, 3), // Forest area.
-                World.Instance.GetArea(1, 3)  // Desert area.
+                World.Instance.GetArea(1, 3)  // Randomly generated area.
             };
 
             var areaEventVisitor = new AreaEventVisitor();
