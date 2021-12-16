@@ -88,6 +88,7 @@ namespace SignalRWebPack.Engine
             Facade servas = new Facade();
             //servas.Factory();
             servas.Builder();
+            servas.Visitor();
         }
 
         //creates instance only on server
